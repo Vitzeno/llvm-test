@@ -1,0 +1,9 @@
+# function with return value and control flow
+func min(a :int, b :int) :int {
+    # check which is smaller
+	if (a < b) {
+		return a
+	}
+
+	return b
+}
