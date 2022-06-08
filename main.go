@@ -1,63 +1,81 @@
-// This example produces LLVM IR code equivalent to the following C code, which
-// implements a pseudo-random number generator.
-//
-//    int abs(int x);
-//
-//    int seed = 0;
-//
-//    // ref: https://en.wikipedia.org/wiki/Linear_congruential_generator
-//    //    a = 0x15A4E35
-//    //    c = 1
-//    int rand(void) {
-//       seed = seed*0x15A4E35 + 1;
-//       return abs(seed);
-//    }
 package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/llir/llvm/ir"
 	"github.com/llir/llvm/ir/constant"
 	"github.com/llir/llvm/ir/types"
 )
 
+func writeToFile(module *ir.Module) {
+	f, err := os.Create("out.ll")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	_, err2 := f.WriteString(module.String())
+
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+}
+
 func main() {
-	// Create convenience types and constants.
+	// This example produces LLVM IR code equivalent to the following C code:
+	//
+	//    int main() {
+	//       int a = 32;
+	//       int b = 16;
+	//       return a + b;
+	//    }
+	//
+	// Read: https://blog.felixangell.com/an-introduction-to-llvm-in-go for inspiration.
+
+	// Create convenience types.
 	i32 := types.I32
-	zero := constant.NewInt(i32, 0)
-	a := constant.NewInt(i32, 0x15A4E35) // multiplier of the PRNG.
-	c := constant.NewInt(i32, 1)         // increment of the PRNG.
 
 	// Create a new LLVM IR module.
 	m := ir.NewModule()
+	// int main() { ... }
+	main := m.NewFunc("main", i32)
 
-	// Create an external function declaration and append it to the module.
-	//
-	//    int abs(int x);
-	abs := m.NewFunc("abs", i32, ir.NewParam("x", i32))
-
-	// Create a global variable definition and append it to the module.
-	//
-	//    int seed = 0;
-	seed := m.NewGlobalDef("seed", zero)
-
-	// Create a function definition and append it to the module.
-	//
-	//    int rand(void) { ... }
-	rand := m.NewFunc("rand", i32)
-
-	// Create an unnamed entry basic block and append it to the `rand` function.
-	entry := rand.NewBlock("")
-
+	// Create an unnamed entry basic block and append it to the `main` function.
+	entry := main.NewBlock("")
 	// Create instructions and append them to the entry basic block.
-	tmp1 := entry.NewLoad(i32, seed)
-	tmp2 := entry.NewMul(tmp1, a)
-	tmp3 := entry.NewAdd(tmp2, c)
-	entry.NewStore(tmp3, seed)
-	tmp4 := entry.NewCall(abs, tmp3)
-	entry.NewRet(tmp4)
+
+	// %a = alloca i32
+	a := entry.NewAlloca(i32)
+	a.SetName("a")
+
+	// %b = alloca i32
+	b := entry.NewAlloca(i32)
+	b.SetName("b")
+
+	// store i32 32, i32* %a
+	entry.NewStore(constant.NewInt(i32, 32), a)
+
+	// store i32 16, i32* %b
+	entry.NewStore(constant.NewInt(i32, 16), b)
+
+	// %1 = load i32, i32* %a
+	tmpA := entry.NewLoad(types.I32, a)
+
+	// %2 = load i32, i32* %b
+	tmpB := entry.NewLoad(types.I32, b)
+
+	// %3 = add nsw i32 %1, %2
+	tmpC := entry.NewAdd(tmpA, tmpB)
+
+	// ret i32 %3
+	entry.NewRet(tmpC)
 
 	// Print the LLVM IR assembly of the module.
 	fmt.Println(m)
+	writeToFile(m)
 }
