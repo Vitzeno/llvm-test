@@ -8,22 +8,32 @@ const (
 	tokenIdentifier     // programmer defined names
 	tokenKeyword        // reserved keywords (e.g. "func", "if", "else", "return")
 	tokenComment        // single line comment (e.g. #)
-	tokenSeparator      // separators (e.g. "}", ")", ";")
-	tokenAssignment     // assignment operator (e.g. "=", "*=", "/=")
-	tokenBinaryOperator // binary operators (e.g. "+",  "==", "!=", "<", "<=", ">", ">=")
-	tokenUnaryOperator  // unary operators (e.g. "!", "++", "--")
+	tokenLeftParen      // (
+	tokenRightParen     // )
+	tokenLeftBrace      // {
+	tokenRightBrace     // }
+	tokenAssignment     // assignment operator (e.g. "=")
+	tokenAddition       // addition operator (e.g. "+")
+	tokenSubtraction    // subtraction operator (e.g. "-")
+	tokenMultiplication // multiplication operator (e.g. "*")
+	tokenDivision       // division operator (e.g. "/")
 	tokenInt            // integer literal
 )
 
 var tokenNames = map[Token]string{
 	tokenEof:            "EOF",
-	tokenIllegal:        "illegal",
-	tokenIdentifier:     "identifier",
-	tokenKeyword:        "keyword",
-	tokenComment:        "comment",
-	tokenSeparator:      "separator",
-	tokenAssignment:     "assignment",
-	tokenBinaryOperator: "binary operator",
-	tokenUnaryOperator:  "unary operator",
-	tokenInt:            "integer",
+	tokenIllegal:        "ILLEGAL",
+	tokenIdentifier:     "IDENTIFIER",
+	tokenKeyword:        "KEYWORD",
+	tokenComment:        "COMMENT",
+	tokenLeftParen:      "LEFT_PAREN",
+	tokenRightParen:     "RIGHT_PAREN",
+	tokenLeftBrace:      "LEFT_BRACE",
+	tokenRightBrace:     "RIGHT_BRACE",
+	tokenAssignment:     "ASSIGNMENT",
+	tokenAddition:       "ADDITION",
+	tokenSubtraction:    "SUBTRACTION",
+	tokenMultiplication: "MULTIPLICATION",
+	tokenDivision:       "DIVISION",
+	tokenInt:            "INT",
 }

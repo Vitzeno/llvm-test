@@ -40,8 +40,14 @@ func (l *Lexer) Lex() (Position, Token, string) {
 		switch r {
 		case '\n':
 			l.resetPosition()
-		case '{', '}', '(', ')', ';', ',', ':':
-			return l.pos, tokenSeparator, string(r)
+		case '(':
+			return l.pos, tokenLeftParen, string(r)
+		case ')':
+			return l.pos, tokenRightParen, string(r)
+		case '{':
+			return l.pos, tokenLeftBrace, string(r)
+		case '}':
+			return l.pos, tokenRightBrace, string(r)
 		case '#':
 			startPos := l.pos
 			// skip until end of line since comment
@@ -53,8 +59,14 @@ func (l *Lexer) Lex() (Position, Token, string) {
 			return startPos, tokenComment, string(r)
 		case '=':
 			return l.pos, tokenAssignment, string(r)
-		case '+', '-', '*', '/':
-			return l.pos, tokenBinaryOperator, string(r)
+		case '+':
+			return l.pos, tokenAddition, string(r)
+		case '-':
+			return l.pos, tokenSubtraction, string(r)
+		case '*':
+			return l.pos, tokenMultiplication, string(r)
+		case '/':
+			return l.pos, tokenDivision, string(r)
 		default:
 			if unicode.IsSpace(r) {
 				continue
