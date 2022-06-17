@@ -6,8 +6,6 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
-//go generate goyacc -o parser.go -v parser.output grammar.y
-
 func main() {
 	yyDebug = 0
 	file, err := os.Open("testdata/input.test")

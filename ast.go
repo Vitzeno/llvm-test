@@ -42,7 +42,6 @@ func (l *Lexer) eval(e expr) float64 {
 	//spew.Dump(l.variables)
 	switch e := e.(type) {
 	case *binaryExpr:
-		fmt.Printf("binaryExpr: %c\n", e.Op)
 		switch e.Op {
 		case '+':
 			return l.eval(e.lhs) + l.eval(e.rhs)
@@ -51,6 +50,10 @@ func (l *Lexer) eval(e expr) float64 {
 		case '*':
 			return l.eval(e.lhs) * l.eval(e.rhs)
 		case '/':
+			if l.eval(e.rhs) == 0 {
+				l.Error("Division by zero")
+				return 0
+			}
 			return l.eval(e.lhs) / l.eval(e.rhs)
 		default:
 			panic("unknown operator")
