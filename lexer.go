@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
+	"strconv"
 	"unicode"
 )
 
@@ -23,13 +25,17 @@ func NewLexer(reader io.Reader) *Lexer {
 	}
 }
 
-func (l *Lexer) Lex() (Position, Token, string) {
+func (l *Lexer) Error(e string) {
+	fmt.Println(e)
+	fmt.Printf("Line: %d, Col: %d\n", l.pos.line, l.pos.col)
+}
 
+func (l *Lexer) Lex(lval *yySymType) int {
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
-				return l.pos, tokenEof, ""
+				return EOF
 			}
 
 			panic(err)
@@ -38,57 +44,30 @@ func (l *Lexer) Lex() (Position, Token, string) {
 		l.pos.col++
 
 		switch r {
-		case '\n':
-			l.resetPosition()
-		case '(':
-			return l.pos, tokenLeftParen, string(r)
-		case ')':
-			return l.pos, tokenRightParen, string(r)
-		case '{':
-			return l.pos, tokenLeftBrace, string(r)
-		case '}':
-			return l.pos, tokenRightBrace, string(r)
-		case '#':
-			startPos := l.pos
-			// skip until end of line since comment
-			_, _, err := l.reader.ReadLine()
-			if err != nil {
-				panic(err)
-			}
-			l.resetPosition()
-			return startPos, tokenComment, string(r)
-		case '=':
-			return l.pos, tokenAssignment, string(r)
-		case '+':
-			return l.pos, tokenAddition, string(r)
-		case '-':
-			return l.pos, tokenSubtraction, string(r)
-		case '*':
-			return l.pos, tokenMultiplication, string(r)
-		case '/':
-			return l.pos, tokenDivision, string(r)
 		default:
 			if unicode.IsSpace(r) {
 				continue
 			} else if unicode.IsDigit(r) {
 				// backup and let lexInt rescan the beginning of the int
-				startPos := l.pos
 				l.backup()
 				lit := l.lexInt()
-				return startPos, tokenInt, lit
+				i, err := strconv.ParseFloat(lit, 64)
+				if err != nil {
+					panic(err)
+				}
+				lval.Number = i
+				return tokenInt
 			} else if unicode.IsLetter(r) {
 				// backup and let lexIdentifier rescan the beginning of the identifier
-				startPos := l.pos
 				l.backup()
 				lit := l.lexIdentifier()
 				switch lit {
-				case "func", "if", "else", "return":
-					return startPos, tokenKeyword, lit
 				default:
-					return startPos, tokenIdentifier, lit
+					lval.String = lit
+					return tokenIdentifier
 				}
 			} else {
-				return l.pos, tokenIllegal, string(r)
+				return int(r)
 			}
 		}
 	}
@@ -108,7 +87,7 @@ func (l *Lexer) lexInt() string {
 		if unicode.IsDigit(r) {
 			lit += string(r)
 		} else {
-			// overscanned int, need to move back
+			// over-scanned int, need to move back
 			l.backup()
 			return lit
 		}
@@ -130,7 +109,7 @@ func (l *Lexer) lexIdentifier() string {
 		if unicode.IsLetter(r) {
 			lit += string(r)
 		} else {
-			// overscanned indentifier, need to move back
+			// over=scanned identifier, need to move back
 			l.backup()
 			return lit
 		}
