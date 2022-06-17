@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"strconv"
 	"unicode"
 )
 
@@ -14,20 +13,26 @@ type Position struct {
 }
 
 type Lexer struct {
-	pos    Position
-	reader *bufio.Reader
+	pos         Position
+	variables   map[string]float64
+	evalFailed  bool
+	parseResult expr
+	reader      *bufio.Reader
 }
 
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
-		pos:    Position{line: 1, col: 0},
-		reader: bufio.NewReader(reader),
+		pos:         Position{line: 1, col: 0},
+		variables:   map[string]float64{},
+		parseResult: &astRoot{},
+		reader:      bufio.NewReader(reader),
 	}
 }
 
 func (l *Lexer) Error(e string) {
 	fmt.Println(e)
 	fmt.Printf("Line: %d, Col: %d\n", l.pos.line, l.pos.col)
+	l.evalFailed = true
 }
 
 func (l *Lexer) Lex(lval *yySymType) int {
@@ -51,12 +56,8 @@ func (l *Lexer) Lex(lval *yySymType) int {
 				// backup and let lexInt rescan the beginning of the int
 				l.backup()
 				lit := l.lexInt()
-				i, err := strconv.ParseFloat(lit, 64)
-				if err != nil {
-					panic(err)
-				}
-				lval.Number = i
-				return tokenInt
+				lval.String = lit
+				return tokenNumber
 			} else if unicode.IsLetter(r) {
 				// backup and let lexIdentifier rescan the beginning of the identifier
 				l.backup()

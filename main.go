@@ -13,4 +13,8 @@ func main() {
 
 	lexer := NewLexer(file)
 	yyParse(lexer)
+
+	if !lexer.evalFailed {
+		lexer.eval(lexer.parseResult)
+	}
 }
