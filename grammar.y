@@ -10,33 +10,35 @@ Expr expr
 
 %token<String> NUMBER IDENTIFIER SEPARATOR LET
 
-%type <Expr> expr assignment
+%type <Expr> expressions expression assignment 
 
 %left '+' '-'
 %left '*' '/'
 
+%start program
+
 %%
-start : program
-     | start program
+program :  /* empty */
+     | program expressions { yylex.(*Lexer).parseResult = &astRoot{$2} } 
      ;
 
-program: 
-     expr SEPARATOR { yylex.(*Lexer).parseResult = &astRoot{$1} } 
-     | assignment SEPARATOR { yylex.(*Lexer).parseResult = &astRoot{$1} }
+expressions:
+     expression SEPARATOR 
+     | assignment SEPARATOR 
      ;
 
-expr:
-      NUMBER { $$ = &number{$1} }
+expression:
+     NUMBER { $$ = &number{$1} }
     | IDENTIFIER { $$ = &variable{$1} }
-    | expr '+' expr { $$ = &binaryExpr{Op: '+', lhs: $1, rhs: $3} }
-    | expr '-' expr { $$ = &binaryExpr{Op: '-', lhs: $1, rhs: $3} }
-    | expr '*' expr { $$ = &binaryExpr{Op: '*', lhs: $1, rhs: $3} }
-    | expr '/' expr { $$ = &binaryExpr{Op: '/', lhs: $1, rhs: $3} }
-    | '(' expr ')'  { $$ = &parenExpr{$2} }
-    | '-' expr %prec '*' { $$ = &unaryExpr{$2} }
+    | expression '+' expression { $$ = &binaryExpr{Op: '+', lhs: $1, rhs: $3} }
+    | expression '-' expression { $$ = &binaryExpr{Op: '-', lhs: $1, rhs: $3} }
+    | expression '*' expression { $$ = &binaryExpr{Op: '*', lhs: $1, rhs: $3} }
+    | expression '/' expression { $$ = &binaryExpr{Op: '/', lhs: $1, rhs: $3} }
+    | '(' expression ')'  { $$ = &parenExpr{$2} }
+    | '-' expression %prec '*' { $$ = &unaryExpr{$2} }
     ;
 
 assignment:
-          LET IDENTIFIER '=' expr { $$ = &assignment{variable: $2, expr: $4} }
+          LET IDENTIFIER '=' expression { $$ = &assignment{variable: $2, expr: $4} }
      ;
 %%

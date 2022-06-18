@@ -3,13 +3,17 @@ package main
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
-type expr interface{}
+type program interface{}
 
 type astRoot struct {
 	expr expr
 }
+
+type expr interface{}
 
 type binaryExpr struct {
 	Op  byte
@@ -39,7 +43,9 @@ type assignment struct {
 }
 
 func (l *Lexer) eval(e expr) float64 {
-	//spew.Dump(l.variables)
+	spew.Dump(e)
+	fmt.Println("==========================")
+
 	switch e := e.(type) {
 	case *binaryExpr:
 		switch e.Op {
@@ -60,11 +66,9 @@ func (l *Lexer) eval(e expr) float64 {
 		}
 
 	case *unaryExpr:
-		//fmt.Printf("unary: %v\n", l.eval(e.expr))
 		return -l.eval(e.expr)
 
 	case *astRoot:
-		//fmt.Printf("%f\n", l.eval(e.expr))
 		result := l.eval(e.expr)
 		if !l.evalFailed {
 			fmt.Println(result)
@@ -72,11 +76,9 @@ func (l *Lexer) eval(e expr) float64 {
 		return result
 
 	case *parenExpr:
-		//fmt.Printf("%T\n", e.expr)
 		return l.eval(e.expr)
 
 	case *variable:
-		//fmt.Printf("variable %s\n", e.name)
 		val, ok := l.variables[e.name]
 		if !ok {
 			l.Error(fmt.Sprintf("undefined variable: %s", e.name))
@@ -84,7 +86,6 @@ func (l *Lexer) eval(e expr) float64 {
 		return val
 
 	case *number:
-		//fmt.Printf("number: %s\n", e.value)
 		var err error
 		val, err := strconv.ParseFloat(e.value, 64)
 		if err != nil {
@@ -93,7 +94,6 @@ func (l *Lexer) eval(e expr) float64 {
 		return val
 
 	case *assignment:
-		//fmt.Printf("assignment: %s = %v\n", e.variable, l.eval(e.expr))
 		result := l.eval(e.expr)
 		if !l.evalFailed {
 			l.variables[e.variable] = result

@@ -2,8 +2,6 @@ package main
 
 import (
 	"os"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func main() {
@@ -15,8 +13,11 @@ func main() {
 
 	lexer := NewLexer(file)
 	yyParse(lexer)
+	// if output != 0 {
+	// 	panic("parse error")
+	// }
 
-	spew.Dump(lexer.parseResult)
+	//spew.Dump(lexer.parseResult)
 	if !lexer.evalFailed {
 		lexer.eval(lexer.parseResult)
 	}

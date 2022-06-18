@@ -16,7 +16,7 @@ type Lexer struct {
 	pos         Position
 	variables   map[string]float64
 	evalFailed  bool
-	parseResult expr
+	parseResult program
 	reader      *bufio.Reader
 }
 
@@ -100,7 +100,6 @@ func (l *Lexer) lexInt() string {
 			return lit
 		}
 	}
-
 }
 
 func (l *Lexer) lexIdentifier() string {

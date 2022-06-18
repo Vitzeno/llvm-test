@@ -42,7 +42,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line grammar.y:42
+//line grammar.y:44
 
 //line yacctab:1
 var yyExca = [...]int{
@@ -53,46 +53,46 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 40
+const yyLast = 39
 
 var yyAct = [...]int{
 
-	3, 12, 13, 14, 15, 25, 24, 16, 17, 18,
-	14, 15, 19, 20, 21, 22, 23, 5, 6, 2,
-	9, 10, 8, 5, 6, 7, 26, 1, 8, 4,
-	11, 7, 12, 13, 14, 15, 12, 13, 14, 15,
+	3, 11, 12, 13, 14, 24, 23, 15, 16, 17,
+	13, 14, 19, 20, 21, 22, 5, 6, 18, 9,
+	1, 8, 5, 6, 7, 25, 4, 8, 2, 10,
+	7, 11, 12, 13, 14, 11, 12, 13, 14,
 }
 var yyPact = [...]int{
 
-	13, 13, -1000, 24, 1, -1000, -1000, 19, 19, 7,
-	-1000, -1000, 19, 19, 19, 19, -1000, -7, -1000, -9,
-	0, 0, -1000, -1000, -1000, 19, 28,
+	-1000, 12, -1000, 23, 1, -1000, -1000, 18, 18, 13,
+	-1000, 18, 18, 18, 18, -1000, -7, -1000, -9, 0,
+	0, -1000, -1000, -1000, 18, 27,
 }
 var yyPgo = [...]int{
 
-	0, 0, 29, 27, 19,
+	0, 28, 0, 26, 20,
 }
 var yyR1 = [...]int{
 
-	0, 3, 3, 4, 4, 1, 1, 1, 1, 1,
-	1, 1, 1, 2,
+	0, 4, 4, 1, 1, 2, 2, 2, 2, 2,
+	2, 2, 2, 3,
 }
 var yyR2 = [...]int{
 
-	0, 1, 2, 2, 2, 1, 1, 3, 3, 3,
+	0, 0, 2, 2, 2, 1, 1, 3, 3, 3,
 	3, 3, 2, 4,
 }
 var yyChk = [...]int{
 
-	-1000, -3, -4, -1, -2, 4, 5, 12, 9, 7,
-	-4, 6, 8, 9, 10, 11, 6, -1, -1, 5,
-	-1, -1, -1, -1, 13, 14, -1,
+	-1000, -4, -1, -2, -3, 4, 5, 12, 9, 7,
+	6, 8, 9, 10, 11, 6, -2, -2, 5, -2,
+	-2, -2, -2, 13, 14, -2,
 }
 var yyDef = [...]int{
 
-	0, -2, 1, 0, 0, 5, 6, 0, 0, 0,
-	2, 3, 0, 0, 0, 0, 4, 0, 12, 0,
-	7, 8, 9, 10, 11, 0, 13,
+	1, -2, 2, 0, 0, 5, 6, 0, 0, 0,
+	3, 0, 0, 0, 0, 4, 0, 12, 0, 7,
+	8, 9, 10, 11, 0, 13,
 }
 var yyTok1 = [...]int{
 
@@ -449,69 +449,63 @@ yydefault:
 	// dummy call; replaced with literal code
 	switch yynt {
 
-	case 3:
+	case 2:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line grammar.y:24
+//line grammar.y:22
 		{
-			yylex.(*Lexer).parseResult = &astRoot{yyDollar[1].Expr}
-		}
-	case 4:
-		yyDollar = yyS[yypt-2 : yypt+1]
-//line grammar.y:25
-		{
-			yylex.(*Lexer).parseResult = &astRoot{yyDollar[1].Expr}
+			yylex.(*Lexer).parseResult = &astRoot{yyDollar[2].Expr}
 		}
 	case 5:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:29
+//line grammar.y:31
 		{
 			yyVAL.Expr = &number{yyDollar[1].String}
 		}
 	case 6:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:30
+//line grammar.y:32
 		{
 			yyVAL.Expr = &variable{yyDollar[1].String}
 		}
 	case 7:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:31
+//line grammar.y:33
 		{
 			yyVAL.Expr = &binaryExpr{Op: '+', lhs: yyDollar[1].Expr, rhs: yyDollar[3].Expr}
 		}
 	case 8:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:32
+//line grammar.y:34
 		{
 			yyVAL.Expr = &binaryExpr{Op: '-', lhs: yyDollar[1].Expr, rhs: yyDollar[3].Expr}
 		}
 	case 9:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:33
+//line grammar.y:35
 		{
 			yyVAL.Expr = &binaryExpr{Op: '*', lhs: yyDollar[1].Expr, rhs: yyDollar[3].Expr}
 		}
 	case 10:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:34
+//line grammar.y:36
 		{
 			yyVAL.Expr = &binaryExpr{Op: '/', lhs: yyDollar[1].Expr, rhs: yyDollar[3].Expr}
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:35
+//line grammar.y:37
 		{
 			yyVAL.Expr = &parenExpr{yyDollar[2].Expr}
 		}
 	case 12:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line grammar.y:36
+//line grammar.y:38
 		{
 			yyVAL.Expr = &unaryExpr{yyDollar[2].Expr}
 		}
 	case 13:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line grammar.y:40
+//line grammar.y:42
 		{
 			yyVAL.Expr = &assignment{variable: yyDollar[2].String, expr: yyDollar[4].Expr}
 		}
