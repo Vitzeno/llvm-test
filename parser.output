@@ -1,0 +1,269 @@
+
+state 0
+	$accept: .program $end 
+	program: .    (1)
+
+	.  reduce 1 (src line 21)
+
+	program  goto 1
+
+state 1
+	$accept:  program.$end 
+	program:  program.expressions 
+
+	$end  accept
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	LET  shift 9
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expressions  goto 2
+	expression  goto 3
+	assignment  goto 4
+
+state 2
+	program:  program expressions.    (2)
+
+	.  reduce 2 (src line 22)
+
+
+state 3
+	expressions:  expression.SEPARATOR 
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+
+	SEPARATOR  shift 10
+	'+'  shift 11
+	'-'  shift 12
+	'*'  shift 13
+	'/'  shift 14
+	.  error
+
+
+state 4
+	expressions:  assignment.SEPARATOR 
+
+	SEPARATOR  shift 15
+	.  error
+
+
+state 5
+	expression:  NUMBER.    (5)
+
+	.  reduce 5 (src line 30)
+
+
+state 6
+	expression:  IDENTIFIER.    (6)
+
+	.  reduce 6 (src line 32)
+
+
+state 7
+	expression:  '('.expression ')' 
+
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expression  goto 16
+
+state 8
+	expression:  '-'.expression 
+
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expression  goto 17
+
+state 9
+	assignment:  LET.IDENTIFIER '=' expression 
+
+	IDENTIFIER  shift 18
+	.  error
+
+
+state 10
+	expressions:  expression SEPARATOR.    (3)
+
+	.  reduce 3 (src line 25)
+
+
+state 11
+	expression:  expression '+'.expression 
+
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expression  goto 19
+
+state 12
+	expression:  expression '-'.expression 
+
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expression  goto 20
+
+state 13
+	expression:  expression '*'.expression 
+
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expression  goto 21
+
+state 14
+	expression:  expression '/'.expression 
+
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expression  goto 22
+
+state 15
+	expressions:  assignment SEPARATOR.    (4)
+
+	.  reduce 4 (src line 27)
+
+
+state 16
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  '(' expression.')' 
+
+	'+'  shift 11
+	'-'  shift 12
+	'*'  shift 13
+	'/'  shift 14
+	')'  shift 23
+	.  error
+
+
+state 17
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  '-' expression.    (12)
+
+	.  reduce 12 (src line 38)
+
+
+state 18
+	assignment:  LET IDENTIFIER.'=' expression 
+
+	'='  shift 24
+	.  error
+
+
+state 19
+	expression:  expression.'+' expression 
+	expression:  expression '+' expression.    (7)
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+
+	'*'  shift 13
+	'/'  shift 14
+	.  reduce 7 (src line 33)
+
+
+state 20
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression '-' expression.    (8)
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+
+	'*'  shift 13
+	'/'  shift 14
+	.  reduce 8 (src line 34)
+
+
+state 21
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression '*' expression.    (9)
+	expression:  expression.'/' expression 
+
+	.  reduce 9 (src line 35)
+
+
+state 22
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  expression '/' expression.    (10)
+
+	.  reduce 10 (src line 36)
+
+
+state 23
+	expression:  '(' expression ')'.    (11)
+
+	.  reduce 11 (src line 37)
+
+
+state 24
+	assignment:  LET IDENTIFIER '='.expression 
+
+	NUMBER  shift 5
+	IDENTIFIER  shift 6
+	'-'  shift 8
+	'('  shift 7
+	.  error
+
+	expression  goto 25
+
+state 25
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	assignment:  LET IDENTIFIER '=' expression.    (13)
+
+	'+'  shift 11
+	'-'  shift 12
+	'*'  shift 13
+	'/'  shift 14
+	.  reduce 13 (src line 41)
+
+
+14 terminals, 5 nonterminals
+14 grammar rules, 26/8000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+54 working sets used
+memory: parser 10/120000
+13 extra closures
+54 shift entries, 1 exceptions
+11 goto entries
+0 entries saved by goto default
+Optimizer space used: output 39/120000
+39 table entries, 0 zero
+maximum spread: 14, maximum offset: 24

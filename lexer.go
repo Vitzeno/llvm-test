@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"strconv"
 	"unicode"
 )
 
@@ -14,23 +13,30 @@ type Position struct {
 }
 
 type Lexer struct {
-	pos    Position
-	reader *bufio.Reader
+	pos         Position
+	variables   map[string]float64
+	evalFailed  bool
+	parseResult program
+	reader      *bufio.Reader
 }
 
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
-		pos:    Position{line: 1, col: 0},
-		reader: bufio.NewReader(reader),
+		pos:         Position{line: 1, col: 0},
+		variables:   make(map[string]float64),
+		parseResult: &astRoot{},
+		reader:      bufio.NewReader(reader),
 	}
 }
 
 func (l *Lexer) Error(e string) {
 	fmt.Println(e)
 	fmt.Printf("Line: %d, Col: %d\n", l.pos.line, l.pos.col)
+	l.evalFailed = true
 }
 
 func (l *Lexer) Lex(lval *yySymType) int {
+	//spew.Dump(l.variables)
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
@@ -38,12 +44,16 @@ func (l *Lexer) Lex(lval *yySymType) int {
 				return EOF
 			}
 
-			panic(err)
+			l.Error(fmt.Sprintf("unexpected error: %s", err))
 		}
 
 		l.pos.col++
 
 		switch r {
+		case '\n':
+			l.resetPosition()
+		case ';':
+			return tokenSeparator
 		default:
 			if unicode.IsSpace(r) {
 				continue
@@ -51,19 +61,17 @@ func (l *Lexer) Lex(lval *yySymType) int {
 				// backup and let lexInt rescan the beginning of the int
 				l.backup()
 				lit := l.lexInt()
-				i, err := strconv.ParseFloat(lit, 64)
-				if err != nil {
-					panic(err)
-				}
-				lval.Number = i
-				return tokenInt
+				lval.String = lit
+				return tokenNumber
 			} else if unicode.IsLetter(r) {
 				// backup and let lexIdentifier rescan the beginning of the identifier
 				l.backup()
 				lit := l.lexIdentifier()
+				lval.String = lit
 				switch lit {
+				case "let":
+					return tokenLet
 				default:
-					lval.String = lit
 					return tokenIdentifier
 				}
 			} else {
@@ -92,7 +100,6 @@ func (l *Lexer) lexInt() string {
 			return lit
 		}
 	}
-
 }
 
 func (l *Lexer) lexIdentifier() string {

@@ -1,42 +1,44 @@
 %{
 package main
-
-import (
-        "fmt"
-)
 %}
 
 %union{
 String string
-Number float64
+Expr expr 
 }
 
 
-%token<String> NUMBER IDENTIFIER
+%token<String> NUMBER IDENTIFIER SEPARATOR LET
 
-%type <Number> expr
+%type <Expr> expressions expression assignment 
 
-// operator precedence
 %left '+' '-'
 %left '*' '/'
 
-%%
-start: expr {{
-            fmt.Println($1)
-     }}
-     | assignment;
+%start program
 
-expr:
-      NUMBER {}
-    | IDENTIFIER {}
-    | expr '+' expr { $$ = $1 + $3 }
-    | expr '-' expr { $$ = $1 - $3 }
-    | expr '*' expr { $$ = $1 * $3 }
-    | expr '/' expr { $$ = $1 / $3 }
-    | '(' expr ')'  { $$ = $2 }
-    | '-' expr %prec '*' { $$ = -$2 }
+%%
+program :  /* empty */
+     | program expressions { yylex.(*Lexer).parseResult = &astRoot{$2} } 
+     ;
+
+expressions:
+     expression SEPARATOR 
+     | assignment SEPARATOR 
+     ;
+
+expression:
+     NUMBER { $$ = &number{$1} }
+    | IDENTIFIER { $$ = &variable{$1} }
+    | expression '+' expression { $$ = &binaryExpr{Op: '+', lhs: $1, rhs: $3} }
+    | expression '-' expression { $$ = &binaryExpr{Op: '-', lhs: $1, rhs: $3} }
+    | expression '*' expression { $$ = &binaryExpr{Op: '*', lhs: $1, rhs: $3} }
+    | expression '/' expression { $$ = &binaryExpr{Op: '/', lhs: $1, rhs: $3} }
+    | '(' expression ')'  { $$ = &parenExpr{$2} }
+    | '-' expression %prec '*' { $$ = &unaryExpr{$2} }
     ;
 
 assignment:
-          IDENTIFIER '=' expr {};
+          LET IDENTIFIER '=' expression { $$ = &assignment{variable: $2, expr: $4} }
+     ;
 %%
