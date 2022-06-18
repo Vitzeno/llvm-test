@@ -1,7 +1,7 @@
 parser-gen:
 	@echo "Generating parser..."
-	@goyacc -o parser.go -v parser.output grammar.y
+	@goyacc -o cmd/parser.go -v cmd/parser.output cmd/grammar.y
 	@echo "Done."
 
 run:
-	@go run *.go
+	@go run cmd/*.go
