@@ -3,17 +3,13 @@ package main
 import (
 	"fmt"
 	"strconv"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
-type program interface{}
+type expr interface{}
 
 type astRoot struct {
 	expr expr
 }
-
-type expr interface{}
 
 type binaryExpr struct {
 	Op  byte
@@ -43,9 +39,7 @@ type assignment struct {
 }
 
 func (l *Lexer) eval(e expr) float64 {
-	spew.Dump(e)
-	fmt.Println("==========================")
-
+	//spew.Dump(e)
 	switch e := e.(type) {
 	case *binaryExpr:
 		switch e.Op {
@@ -100,6 +94,34 @@ func (l *Lexer) eval(e expr) float64 {
 		}
 		return result
 
+	default:
+		panic("unknown node type")
+	}
+}
+
+func (l *Lexer) printAstNode(e expr) {
+	switch e := e.(type) {
+	case *binaryExpr:
+		l.printAstNode(e.lhs)
+		fmt.Printf(" %c ", e.Op)
+		l.printAstNode(e.rhs)
+	case *unaryExpr:
+		fmt.Printf("(%c", '-')
+		l.printAstNode(e.expr)
+		fmt.Printf(")")
+	case *astRoot:
+		l.printAstNode(e.expr)
+	case *parenExpr:
+		fmt.Printf("(")
+		l.printAstNode(e.expr)
+		fmt.Printf(")")
+	case *variable:
+		fmt.Printf("%s", e.name)
+	case *number:
+		fmt.Printf("%s", e.value)
+	case *assignment:
+		fmt.Printf("%s = ", e.variable)
+		l.printAstNode(e.expr)
 	default:
 		panic("unknown node type")
 	}

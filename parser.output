@@ -3,13 +3,13 @@ state 0
 	$accept: .program $end 
 	program: .    (1)
 
-	.  reduce 1 (src line 21)
+	.  reduce 1 (src line 26)
 
 	program  goto 1
 
 state 1
 	$accept:  program.$end 
-	program:  program.expressions 
+	program:  program.expressions SEPARATOR 
 
 	$end  accept
 	NUMBER  shift 5
@@ -24,43 +24,42 @@ state 1
 	assignment  goto 4
 
 state 2
-	program:  program expressions.    (2)
+	program:  program expressions.SEPARATOR 
 
-	.  reduce 2 (src line 22)
+	SEPARATOR  shift 10
+	.  error
 
 
 state 3
-	expressions:  expression.SEPARATOR 
+	expressions:  expression.    (3)
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
 	expression:  expression.'/' expression 
 
-	SEPARATOR  shift 10
 	'+'  shift 11
 	'-'  shift 12
 	'*'  shift 13
 	'/'  shift 14
-	.  error
+	.  reduce 3 (src line 30)
 
 
 state 4
-	expressions:  assignment.SEPARATOR 
+	expressions:  assignment.    (4)
 
-	SEPARATOR  shift 15
-	.  error
+	.  reduce 4 (src line 32)
 
 
 state 5
 	expression:  NUMBER.    (5)
 
-	.  reduce 5 (src line 30)
+	.  reduce 5 (src line 35)
 
 
 state 6
 	expression:  IDENTIFIER.    (6)
 
-	.  reduce 6 (src line 32)
+	.  reduce 6 (src line 37)
 
 
 state 7
@@ -72,7 +71,7 @@ state 7
 	'('  shift 7
 	.  error
 
-	expression  goto 16
+	expression  goto 15
 
 state 8
 	expression:  '-'.expression 
@@ -83,19 +82,19 @@ state 8
 	'('  shift 7
 	.  error
 
-	expression  goto 17
+	expression  goto 16
 
 state 9
 	assignment:  LET.IDENTIFIER '=' expression 
 
-	IDENTIFIER  shift 18
+	IDENTIFIER  shift 17
 	.  error
 
 
 state 10
-	expressions:  expression SEPARATOR.    (3)
+	program:  program expressions SEPARATOR.    (2)
 
-	.  reduce 3 (src line 25)
+	.  reduce 2 (src line 27)
 
 
 state 11
@@ -107,7 +106,7 @@ state 11
 	'('  shift 7
 	.  error
 
-	expression  goto 19
+	expression  goto 18
 
 state 12
 	expression:  expression '-'.expression 
@@ -118,7 +117,7 @@ state 12
 	'('  shift 7
 	.  error
 
-	expression  goto 20
+	expression  goto 19
 
 state 13
 	expression:  expression '*'.expression 
@@ -129,7 +128,7 @@ state 13
 	'('  shift 7
 	.  error
 
-	expression  goto 21
+	expression  goto 20
 
 state 14
 	expression:  expression '/'.expression 
@@ -140,15 +139,9 @@ state 14
 	'('  shift 7
 	.  error
 
-	expression  goto 22
+	expression  goto 21
 
 state 15
-	expressions:  assignment SEPARATOR.    (4)
-
-	.  reduce 4 (src line 27)
-
-
-state 16
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
@@ -159,28 +152,28 @@ state 16
 	'-'  shift 12
 	'*'  shift 13
 	'/'  shift 14
-	')'  shift 23
+	')'  shift 22
 	.  error
 
 
-state 17
+state 16
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
 	expression:  expression.'/' expression 
 	expression:  '-' expression.    (12)
 
-	.  reduce 12 (src line 38)
+	.  reduce 12 (src line 43)
 
 
-state 18
+state 17
 	assignment:  LET IDENTIFIER.'=' expression 
 
-	'='  shift 24
+	'='  shift 23
 	.  error
 
 
-state 19
+state 18
 	expression:  expression.'+' expression 
 	expression:  expression '+' expression.    (7)
 	expression:  expression.'-' expression 
@@ -189,10 +182,10 @@ state 19
 
 	'*'  shift 13
 	'/'  shift 14
-	.  reduce 7 (src line 33)
+	.  reduce 7 (src line 38)
 
 
-state 20
+state 19
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression '-' expression.    (8)
@@ -201,36 +194,36 @@ state 20
 
 	'*'  shift 13
 	'/'  shift 14
-	.  reduce 8 (src line 34)
+	.  reduce 8 (src line 39)
 
 
-state 21
+state 20
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
 	expression:  expression '*' expression.    (9)
 	expression:  expression.'/' expression 
 
-	.  reduce 9 (src line 35)
+	.  reduce 9 (src line 40)
 
 
-state 22
+state 21
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
 	expression:  expression.'/' expression 
 	expression:  expression '/' expression.    (10)
 
-	.  reduce 10 (src line 36)
+	.  reduce 10 (src line 41)
+
+
+state 22
+	expression:  '(' expression ')'.    (11)
+
+	.  reduce 11 (src line 42)
 
 
 state 23
-	expression:  '(' expression ')'.    (11)
-
-	.  reduce 11 (src line 37)
-
-
-state 24
 	assignment:  LET IDENTIFIER '='.expression 
 
 	NUMBER  shift 5
@@ -239,9 +232,9 @@ state 24
 	'('  shift 7
 	.  error
 
-	expression  goto 25
+	expression  goto 24
 
-state 25
+state 24
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
@@ -252,18 +245,18 @@ state 25
 	'-'  shift 12
 	'*'  shift 13
 	'/'  shift 14
-	.  reduce 13 (src line 41)
+	.  reduce 13 (src line 46)
 
 
 14 terminals, 5 nonterminals
-14 grammar rules, 26/8000 states
+14 grammar rules, 25/8000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 54 working sets used
 memory: parser 10/120000
 13 extra closures
-54 shift entries, 1 exceptions
+53 shift entries, 1 exceptions
 11 goto entries
 0 entries saved by goto default
 Optimizer space used: output 39/120000
-39 table entries, 0 zero
-maximum spread: 14, maximum offset: 24
+39 table entries, 5 zero
+maximum spread: 14, maximum offset: 23
