@@ -9,16 +9,20 @@ import (
 
 %union{
 String string
-Expr expr 
+Ast ast 
 }
 
 
-%token<String> NUMBER IDENTIFIER SEPARATOR LET
+%token<String> NUMBER IDENTIFIER SEPARATOR LET IF THEN LE GE EQ NE OR AND ELSE
 
-%type <Expr> expressions expression assignment 
+%type <Ast> expressions expression assignment 
 
+%right '='
+%left '<' '>' LE GE EQ NE
 %left '+' '-'
 %left '*' '/'
+%right UMINUS
+%left '(' ')'
 
 %start program
 
@@ -40,7 +44,7 @@ expression:
     | expression '*' expression { $$ = &binaryExpr{Op: '*', lhs: $1, rhs: $3} }
     | expression '/' expression { $$ = &binaryExpr{Op: '/', lhs: $1, rhs: $3} }
     | '(' expression ')'  { $$ = &parenExpr{$2} }
-    | '-' expression %prec '*' { $$ = &unaryExpr{$2} }
+    | '-' expression %prec UMINUS { $$ = &unaryExpr{$2} }
     ;
 
 assignment:

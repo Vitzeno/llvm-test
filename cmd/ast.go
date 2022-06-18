@@ -5,24 +5,24 @@ import (
 	"strconv"
 )
 
-type expr interface{}
+type ast interface{}
 
 type astRoot struct {
-	expr expr
+	expr ast
 }
 
 type binaryExpr struct {
 	Op  byte
-	lhs expr
-	rhs expr
+	lhs ast
+	rhs ast
 }
 
 type unaryExpr struct {
-	expr expr
+	expr ast
 }
 
 type parenExpr struct {
-	expr expr
+	expr ast
 }
 
 type variable struct {
@@ -35,12 +35,12 @@ type number struct {
 
 type assignment struct {
 	variable string
-	expr     expr
+	expr     ast
 }
 
-func (l *Lexer) eval(e expr) float64 {
+func (l *Lexer) eval(a ast) float64 {
 	//spew.Dump(e)
-	switch e := e.(type) {
+	switch e := a.(type) {
 	case *binaryExpr:
 		switch e.Op {
 		case '+':
@@ -99,8 +99,8 @@ func (l *Lexer) eval(e expr) float64 {
 	}
 }
 
-func (l *Lexer) printAstNode(e expr) {
-	switch e := e.(type) {
+func (l *Lexer) printAstNode(a ast) {
+	switch e := a.(type) {
 	case *binaryExpr:
 		l.printAstNode(e.lhs)
 		fmt.Printf(" %c ", e.Op)
