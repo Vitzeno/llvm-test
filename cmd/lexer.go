@@ -16,7 +16,7 @@ type Lexer struct {
 	pos         Position
 	variables   map[string]float64
 	evalFailed  bool
-	parseResult program
+	parseResult expr
 	reader      *bufio.Reader
 }
 

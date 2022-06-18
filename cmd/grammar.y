@@ -1,5 +1,10 @@
 %{
 package main
+
+import (
+     "fmt"
+)
+
 %}
 
 %union{
@@ -19,12 +24,12 @@ Expr expr
 
 %%
 program :  /* empty */
-     | program expressions { yylex.(*Lexer).parseResult = &astRoot{$2} } 
+     | program expressions SEPARATOR { fmt.Println(yylex.(*Lexer).eval($2)) } 
      ;
 
 expressions:
-     expression SEPARATOR 
-     | assignment SEPARATOR 
+     expression  
+     | assignment 
      ;
 
 expression:
