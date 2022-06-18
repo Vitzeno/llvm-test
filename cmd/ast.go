@@ -12,7 +12,7 @@ type astRoot struct {
 }
 
 type binaryExpr struct {
-	Op  byte
+	Op  string
 	lhs ast
 	rhs ast
 }
@@ -38,23 +38,59 @@ type assignment struct {
 	expr     ast
 }
 
+type ifStatement struct {
+	cond     ast
+	thenStmt ast
+	elseStmt ast
+}
+
 func (l *Lexer) eval(a ast) float64 {
 	//spew.Dump(e)
 	switch e := a.(type) {
 	case *binaryExpr:
 		switch e.Op {
-		case '+':
+		case "+":
 			return l.eval(e.lhs) + l.eval(e.rhs)
-		case '-':
+		case "-":
 			return l.eval(e.lhs) - l.eval(e.rhs)
-		case '*':
+		case "*":
 			return l.eval(e.lhs) * l.eval(e.rhs)
-		case '/':
+		case "/":
 			if l.eval(e.rhs) == 0 {
 				l.Error("Division by zero")
 				return 0
 			}
 			return l.eval(e.lhs) / l.eval(e.rhs)
+		case ">":
+			if l.eval(e.lhs) > l.eval(e.rhs) {
+				return 1
+			}
+			return 0
+		case "<":
+			if l.eval(e.lhs) < l.eval(e.rhs) {
+				return 1
+			}
+			return 0
+		case "==":
+			if l.eval(e.lhs) == l.eval(e.rhs) {
+				return 1
+			}
+			return 0
+		case "NE":
+			if l.eval(e.lhs) != l.eval(e.rhs) {
+				return 1
+			}
+			return 0
+		case "OR":
+			if l.eval(e.lhs) != 0 || l.eval(e.rhs) != 0 {
+				return 1
+			}
+			return 0
+		case "AND":
+			if l.eval(e.lhs) != 0 && l.eval(e.rhs) != 0 {
+				return 1
+			}
+			return 0
 		default:
 			panic("unknown operator")
 		}
@@ -93,6 +129,15 @@ func (l *Lexer) eval(a ast) float64 {
 			l.variables[e.variable] = result
 		}
 		return result
+
+	case *ifStatement:
+		if l.eval(e.cond) != 0 {
+			return l.eval(e.thenStmt)
+		}
+		if e.elseStmt != nil {
+			return l.eval(e.elseStmt)
+		}
+		return 0
 
 	default:
 		panic("unknown node type")

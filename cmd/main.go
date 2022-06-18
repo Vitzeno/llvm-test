@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	yyDebug = 0
+	yyDebug = 3
 	file, err := os.Open("testdata/input.test")
 	if err != nil {
 		panic(err)
