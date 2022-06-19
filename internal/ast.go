@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -38,10 +38,20 @@ type assignment struct {
 	expr     ast
 }
 
+type reassignment struct {
+	variable string
+	expr     ast
+}
+
 type ifStatement struct {
 	cond     ast
 	thenStmt ast
 	elseStmt ast
+}
+
+type whileStatement struct {
+	cond ast
+	body ast
 }
 
 func (l *Lexer) eval(a ast) float64 {
@@ -124,6 +134,23 @@ func (l *Lexer) eval(a ast) float64 {
 		return val
 
 	case *assignment:
+		_, ok := l.variables[e.variable]
+		if ok {
+			l.Error(fmt.Sprintf("variable already defined: %s", e.variable))
+		}
+
+		result := l.eval(e.expr)
+		if !l.evalFailed {
+			l.variables[e.variable] = result
+		}
+		return result
+
+	case *reassignment:
+		_, ok := l.variables[e.variable]
+		if !ok {
+			l.Error(fmt.Sprintf("undefined variable: %s", e.variable))
+		}
+
 		result := l.eval(e.expr)
 		if !l.evalFailed {
 			l.variables[e.variable] = result
@@ -139,34 +166,12 @@ func (l *Lexer) eval(a ast) float64 {
 		}
 		return 0
 
-	default:
-		panic("unknown node type")
-	}
-}
+	case *whileStatement:
+		for l.eval(e.cond) != 0 {
+			l.eval(e.body)
+		}
+		return 0
 
-func (l *Lexer) printAstNode(a ast) {
-	switch e := a.(type) {
-	case *binaryExpr:
-		l.printAstNode(e.lhs)
-		fmt.Printf(" %c ", e.Op)
-		l.printAstNode(e.rhs)
-	case *unaryExpr:
-		fmt.Printf("(%c", '-')
-		l.printAstNode(e.expr)
-		fmt.Printf(")")
-	case *astRoot:
-		l.printAstNode(e.expr)
-	case *parenExpr:
-		fmt.Printf("(")
-		l.printAstNode(e.expr)
-		fmt.Printf(")")
-	case *variable:
-		fmt.Printf("%s", e.name)
-	case *number:
-		fmt.Printf("%s", e.value)
-	case *assignment:
-		fmt.Printf("%s = ", e.variable)
-		l.printAstNode(e.expr)
 	default:
 		panic("unknown node type")
 	}

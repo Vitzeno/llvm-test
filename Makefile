@@ -1,7 +1,11 @@
 parser-gen:
+	@# -p YY changes yacc prefix to upper case, this exports it for golang packages to access
 	@echo "Generating parser..."
-	@goyacc -o cmd/parser.go -v cmd/parser.output cmd/grammar.y
+	@goyacc -p YY -o internal/parser.go -v internal/parser.output internal/grammar.y
 	@echo "Done."
 
 run:
-	@go run cmd/*.go
+	@go run cmd/main.go
+
+test:
+	@go test -v ./...

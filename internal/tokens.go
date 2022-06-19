@@ -1,4 +1,4 @@
-package main
+package internal
 
 type Token int
 
@@ -19,4 +19,5 @@ const (
 	tokenNe         = NE         // !=
 	tokenOr         = OR         // ||
 	tokenAnd        = AND        // &&
+	tokenWhile      = WHILE      // while keyword
 )

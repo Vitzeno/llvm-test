@@ -1,5 +1,5 @@
 %{
-package main
+package internal
 
 import (
      "fmt"
@@ -12,10 +12,9 @@ String string
 Ast ast 
 }
 
+%token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LE GE EQ NE OR AND ELSE WHILE
 
-%token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LE GE EQ NE OR AND ELSE
-
-%type <Ast> statements statement expression assignment control_flow
+%type <Ast> statements statement expression assignment reassignment control_flow while_statement
 
 %nonassoc NO_ELSE
 %nonassoc ELSE
@@ -30,13 +29,15 @@ Ast ast
 
 %%
 program :  /* empty */
-     | program statement { fmt.Println(yylex.(*Lexer).eval($2)) } 
+     | program statement { fmt.Println(YYlex.(*Lexer).eval($2)) } 
      ;
 
 statement:
      expression SEPARATOR
      | assignment SEPARATOR
+     | reassignment SEPARATOR
      | control_flow
+     | while_statement
      ;
 
 statements:
@@ -65,9 +66,16 @@ assignment:
      LET IDENTIFIER ASSIGN expression { $$ = &assignment{variable: $2, expr: $4} }
      ;
 
+reassignment:
+     IDENTIFIER ASSIGN expression { $$ = &reassignment{variable: $1, expr: $3} }
+     ;
+
 control_flow:
      IF '(' expression ')' '{' statements '}'  %prec NO_ELSE { $$ = &ifStatement{cond: $3, thenStmt: $6, elseStmt: nil} }
      | IF '(' expression ')' '{' statements '}' ELSE '{' statements '}' { $$ = &ifStatement{cond: $3, thenStmt: $6, elseStmt: $10} }
      ;
+
+while_statement:
+     WHILE '(' expression ')' '{' statements '}' { $$ = &whileStatement{cond: $3, body: $6} }
 
 %%
