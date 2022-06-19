@@ -1,0 +1,33 @@
+name: "Go Setup"
+description: "Setup Go"
+
+inputs:
+  github-token:
+    description: "Github token"
+    required: false
+  go-version:
+    description: "Go version"
+    required: false
+    default: "1.18"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure git for private modules
+      env:
+        TOKEN: ${{ inputs.github-token }}
+      run: |
+        if [[ "$TOKEN" != "" ]]; then
+          git config --global url."https://username:${TOKEN}@github.com/atoscerebro".insteadOf "https://github.com/atoscerebro"
+        fi
+      shell: bash
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ inputs.go-version }}
+
+    - name: Set up gotestfmt
+      uses: haveyoudebuggedit/gotestfmt-action@v2
+      with:
+        token: ${{ inputs.github-token }}

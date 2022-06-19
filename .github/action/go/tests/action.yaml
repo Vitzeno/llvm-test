@@ -1,0 +1,28 @@
+name: "Go tests"
+description: "Run Go tests"
+
+inputs:
+  golangci-lint-version:
+    description: "Golang CI lint version"
+    required: false
+    default: "v1.46"
+  working-directory:
+    description: "Working directory to run the steps from"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: ${{ inputs.golangci-lint-version }}
+        args: -c ${{ github.workspace }}/.golangci.yml
+        working-directory: ${{ inputs.working-directory }}
+
+    - name: Run tests
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -euo pipefail
+        go test -cover -race -json -v ./... -coverprofile=coverage.txt -covermode=atomic -coverpkg=./... 2>&1 | tee /tmp/gotest.log | gotestfmt
+      shell: bash
