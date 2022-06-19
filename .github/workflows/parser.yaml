@@ -25,7 +25,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Go tests
-        if: ${{ !startsWith(github.ref, 'refs/tags') }}
         uses: ./.github/actions/go/tests
         with:
           working-directory: ${{ env.working-directory }}
