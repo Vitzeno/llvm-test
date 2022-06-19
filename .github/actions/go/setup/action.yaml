@@ -1,0 +1,17 @@
+name: "Go Setup"
+description: "Setup Go"
+
+inputs:
+  go-version:
+    description: "Go version"
+    required: false
+    default: "1.18"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ inputs.go-version }}
+

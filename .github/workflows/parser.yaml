@@ -1,0 +1,30 @@
+name: Parser
+
+on:
+  workflow_dispatch:
+    push:
+      branches:
+        - main 
+    pull_request:
+      branches:
+        - main
+
+env:
+  working-directory: ./
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: ./.github/actions/go/setup
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Go tests
+        uses: ./.github/actions/go/tests
+        with:
+          working-directory: ${{ env.working-directory }}
