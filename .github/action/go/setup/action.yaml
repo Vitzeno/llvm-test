@@ -2,9 +2,6 @@ name: "Go Setup"
 description: "Setup Go"
 
 inputs:
-  github-token:
-    description: "Github token"
-    required: false
   go-version:
     description: "Go version"
     required: false
@@ -18,7 +15,3 @@ runs:
       with:
         go-version: ${{ inputs.go-version }}
 
-    - name: Set up gotestfmt
-      uses: haveyoudebuggedit/gotestfmt-action@v2
-      with:
-        token: ${{ inputs.github-token }}

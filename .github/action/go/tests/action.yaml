@@ -2,10 +2,6 @@ name: "Go tests"
 description: "Run Go tests"
 
 inputs:
-  golangci-lint-version:
-    description: "Golang CI lint version"
-    required: false
-    default: "v1.46"
   working-directory:
     description: "Working directory to run the steps from"
     required: true
@@ -13,13 +9,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v3
-      with:
-        version: ${{ inputs.golangci-lint-version }}
-        args: -c ${{ github.workspace }}/.golangci.yml
-        working-directory: ${{ inputs.working-directory }}
-
     - name: Run tests
       working-directory: ${{ inputs.working-directory }}
       run: |
