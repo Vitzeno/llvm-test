@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -144,30 +144,30 @@ func (l *Lexer) eval(a ast) float64 {
 	}
 }
 
-func (l *Lexer) printAstNode(a ast) {
-	switch e := a.(type) {
-	case *binaryExpr:
-		l.printAstNode(e.lhs)
-		fmt.Printf(" %c ", e.Op)
-		l.printAstNode(e.rhs)
-	case *unaryExpr:
-		fmt.Printf("(%c", '-')
-		l.printAstNode(e.expr)
-		fmt.Printf(")")
-	case *astRoot:
-		l.printAstNode(e.expr)
-	case *parenExpr:
-		fmt.Printf("(")
-		l.printAstNode(e.expr)
-		fmt.Printf(")")
-	case *variable:
-		fmt.Printf("%s", e.name)
-	case *number:
-		fmt.Printf("%s", e.value)
-	case *assignment:
-		fmt.Printf("%s = ", e.variable)
-		l.printAstNode(e.expr)
-	default:
-		panic("unknown node type")
-	}
-}
+// func (l *Lexer) printAstNode(a ast) {
+// 	switch e := a.(type) {
+// 	case *binaryExpr:
+// 		l.printAstNode(e.lhs)
+// 		fmt.Printf(" %s ", e.Op)
+// 		l.printAstNode(e.rhs)
+// 	case *unaryExpr:
+// 		fmt.Printf("(%c", '-')
+// 		l.printAstNode(e.expr)
+// 		fmt.Printf(")")
+// 	case *astRoot:
+// 		l.printAstNode(e.expr)
+// 	case *parenExpr:
+// 		fmt.Printf("(")
+// 		l.printAstNode(e.expr)
+// 		fmt.Printf(")")
+// 	case *variable:
+// 		fmt.Printf("%s", e.name)
+// 	case *number:
+// 		fmt.Printf("%s", e.value)
+// 	case *assignment:
+// 		fmt.Printf("%s = ", e.variable)
+// 		l.printAstNode(e.expr)
+// 	default:
+// 		panic("unknown node type")
+// 	}
+// }

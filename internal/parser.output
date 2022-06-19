@@ -3,7 +3,7 @@ state 0
 	$accept: .program $end 
 	program: .    (1)
 
-	.  reduce 1 (src line 32)
+	.  reduce 1 (src line 31)
 
 	program  goto 1
 
@@ -28,7 +28,7 @@ state 1
 state 2
 	program:  program statement.    (2)
 
-	.  reduce 2 (src line 33)
+	.  reduce 2 (src line 32)
 
 
 state 3
@@ -68,19 +68,19 @@ state 4
 state 5
 	statement:  control_flow.    (5)
 
-	.  reduce 5 (src line 39)
+	.  reduce 5 (src line 38)
 
 
 state 6
 	expression:  NUMBER.    (8)
 
-	.  reduce 8 (src line 47)
+	.  reduce 8 (src line 46)
 
 
 state 7
 	expression:  IDENTIFIER.    (9)
 
-	.  reduce 9 (src line 49)
+	.  reduce 9 (src line 48)
 
 
 state 8
@@ -123,7 +123,7 @@ state 11
 state 12
 	statement:  expression SEPARATOR.    (3)
 
-	.  reduce 3 (src line 36)
+	.  reduce 3 (src line 35)
 
 
 state 13
@@ -239,7 +239,7 @@ state 22
 state 23
 	statement:  assignment SEPARATOR.    (4)
 
-	.  reduce 4 (src line 38)
+	.  reduce 4 (src line 37)
 
 
 state 24
@@ -282,7 +282,7 @@ state 25
 	expression:  expression.AND expression 
 	expression:  '-' expression.    (21)
 
-	.  reduce 21 (src line 61)
+	.  reduce 21 (src line 60)
 
 
 state 26
@@ -319,7 +319,7 @@ state 28
 
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 10 (src line 50)
+	.  reduce 10 (src line 49)
 
 
 state 29
@@ -337,7 +337,7 @@ state 29
 
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 11 (src line 51)
+	.  reduce 11 (src line 50)
 
 
 state 30
@@ -353,7 +353,7 @@ state 30
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
 
-	.  reduce 12 (src line 52)
+	.  reduce 12 (src line 51)
 
 
 state 31
@@ -369,7 +369,7 @@ state 31
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
 
-	.  reduce 13 (src line 53)
+	.  reduce 13 (src line 52)
 
 
 state 32
@@ -389,7 +389,7 @@ state 32
 	'-'  shift 14
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 14 (src line 54)
+	.  reduce 14 (src line 53)
 
 
 state 33
@@ -409,7 +409,7 @@ state 33
 	'-'  shift 14
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 15 (src line 55)
+	.  reduce 15 (src line 54)
 
 
 state 34
@@ -429,7 +429,7 @@ state 34
 	'-'  shift 14
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 16 (src line 56)
+	.  reduce 16 (src line 55)
 
 
 state 35
@@ -449,7 +449,7 @@ state 35
 	'-'  shift 14
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 17 (src line 57)
+	.  reduce 17 (src line 56)
 
 
 state 36
@@ -469,7 +469,7 @@ state 36
 	'-'  shift 14
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 18 (src line 58)
+	.  reduce 18 (src line 57)
 
 
 state 37
@@ -489,13 +489,13 @@ state 37
 	'-'  shift 14
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 19 (src line 59)
+	.  reduce 19 (src line 58)
 
 
 state 38
 	expression:  '(' expression ')'.    (20)
 
-	.  reduce 20 (src line 60)
+	.  reduce 20 (src line 59)
 
 
 state 39
@@ -560,7 +560,7 @@ state 41
 	'-'  shift 14
 	'*'  shift 15
 	'/'  shift 16
-	.  reduce 22 (src line 64)
+	.  reduce 22 (src line 63)
 
 
 state 42
@@ -607,7 +607,7 @@ state 45
 	IF  shift 11
 	'-'  shift 9
 	'('  shift 8
-	.  reduce 7 (src line 44)
+	.  reduce 7 (src line 43)
 
 	statements  goto 47
 	statement  goto 45
@@ -620,13 +620,13 @@ state 46
 	control_flow:  IF '(' expression ')' '{' statements '}'.ELSE '{' statements '}' 
 
 	ELSE  shift 48
-	.  reduce 23 (src line 68)
+	.  reduce 23 (src line 67)
 
 
 state 47
 	statements:  statement statements.    (6)
 
-	.  reduce 6 (src line 42)
+	.  reduce 6 (src line 41)
 
 
 state 48
@@ -663,7 +663,7 @@ state 50
 state 51
 	control_flow:  IF '(' expression ')' '{' statements '}' ELSE '{' statements '}'.    (24)
 
-	.  reduce 24 (src line 70)
+	.  reduce 24 (src line 69)
 
 
 27 terminals, 7 nonterminals

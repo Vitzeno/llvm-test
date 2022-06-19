@@ -1,5 +1,5 @@
 %{
-package main
+package internal
 
 import (
      "fmt"
@@ -11,7 +11,6 @@ import (
 String string
 Ast ast 
 }
-
 
 %token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LE GE EQ NE OR AND ELSE
 
@@ -30,7 +29,7 @@ Ast ast
 
 %%
 program :  /* empty */
-     | program statement { fmt.Println(yylex.(*Lexer).eval($2)) } 
+     | program statement { fmt.Println(YYlex.(*Lexer).eval($2)) } 
      ;
 
 statement:

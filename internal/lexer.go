@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"bufio"
@@ -35,7 +35,7 @@ func (l *Lexer) Error(e string) {
 	l.evalFailed = true
 }
 
-func (l *Lexer) Lex(lval *yySymType) int {
+func (l *Lexer) Lex(lval *YYSymType) int {
 	//spew.Dump(l.variables)
 	for {
 		r, _, err := l.reader.ReadRune()
