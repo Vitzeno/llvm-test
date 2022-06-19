@@ -91,6 +91,9 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 				case "NE":
 					lval.String = lit
 					return tokenNe
+				case "while":
+					lval.String = lit
+					return tokenWhile
 				default:
 					lval.String = lit
 					return tokenIdentifier

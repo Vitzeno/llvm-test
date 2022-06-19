@@ -44,6 +44,11 @@ type ifStatement struct {
 	elseStmt ast
 }
 
+type whileStatement struct {
+	cond ast
+	body ast
+}
+
 func (l *Lexer) eval(a ast) float64 {
 	//spew.Dump(e)
 	switch e := a.(type) {
@@ -136,6 +141,12 @@ func (l *Lexer) eval(a ast) float64 {
 		}
 		if e.elseStmt != nil {
 			return l.eval(e.elseStmt)
+		}
+		return 0
+
+	case *whileStatement:
+		for l.eval(e.cond) != 0 {
+			l.eval(e.body)
 		}
 		return 0
 

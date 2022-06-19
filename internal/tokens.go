@@ -19,4 +19,5 @@ const (
 	tokenNe         = NE         // !=
 	tokenOr         = OR         // ||
 	tokenAnd        = AND        // &&
+	tokenWhile      = WHILE      // while keyword
 )
