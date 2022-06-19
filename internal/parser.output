@@ -12,20 +12,21 @@ state 1
 	program:  program.statement 
 
 	$end  accept
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	LET  shift 11
-	IF  shift 12
-	WHILE  shift 13
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 9
+	LET  shift 12
+	IF  shift 13
+	WHILE  shift 14
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
 	statement  goto 2
 	expression  goto 3
 	assignment  goto 4
-	control_flow  goto 5
-	while_statement  goto 6
+	reassignment  goto 5
+	control_flow  goto 6
+	while_statement  goto 7
 
 state 2
 	program:  program statement.    (2)
@@ -46,218 +47,244 @@ state 3
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
 
-	SEPARATOR  shift 14
-	LE  shift 19
-	GE  shift 20
-	EQ  shift 21
-	NE  shift 22
-	OR  shift 23
-	AND  shift 24
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
+	SEPARATOR  shift 15
+	LE  shift 20
+	GE  shift 21
+	EQ  shift 22
+	NE  shift 23
+	OR  shift 24
+	AND  shift 25
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
 	.  error
 
 
 state 4
 	statement:  assignment.SEPARATOR 
 
-	SEPARATOR  shift 25
+	SEPARATOR  shift 26
 	.  error
 
 
 state 5
-	statement:  control_flow.    (5)
+	statement:  reassignment.SEPARATOR 
 
-	.  reduce 5 (src line 38)
+	SEPARATOR  shift 27
+	.  error
 
 
 state 6
-	statement:  while_statement.    (6)
+	statement:  control_flow.    (6)
 
 	.  reduce 6 (src line 39)
 
 
 state 7
-	expression:  NUMBER.    (9)
+	statement:  while_statement.    (7)
 
-	.  reduce 9 (src line 47)
+	.  reduce 7 (src line 40)
 
 
 state 8
-	expression:  IDENTIFIER.    (10)
+	expression:  NUMBER.    (10)
 
-	.  reduce 10 (src line 49)
+	.  reduce 10 (src line 48)
 
 
 state 9
-	expression:  '('.expression ')' 
+	expression:  IDENTIFIER.    (11)
+	reassignment:  IDENTIFIER.ASSIGN expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
+	ASSIGN  shift 28
+	.  reduce 11 (src line 50)
 
-	expression  goto 26
 
 state 10
-	expression:  '-'.expression 
+	expression:  '('.expression ')' 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
-	expression  goto 27
+	expression  goto 29
 
 state 11
-	assignment:  LET.IDENTIFIER ASSIGN expression 
+	expression:  '-'.expression 
 
-	IDENTIFIER  shift 28
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
+	expression  goto 31
 
 state 12
-	control_flow:  IF.'(' expression ')' '{' statements '}' 
-	control_flow:  IF.'(' expression ')' '{' statements '}' ELSE '{' statements '}' 
+	assignment:  LET.IDENTIFIER ASSIGN expression 
 
-	'('  shift 29
+	IDENTIFIER  shift 32
 	.  error
 
 
 state 13
-	while_statement:  WHILE.'(' expression ')' '{' statements '}' 
+	control_flow:  IF.'(' expression ')' '{' statements '}' 
+	control_flow:  IF.'(' expression ')' '{' statements '}' ELSE '{' statements '}' 
 
-	'('  shift 30
+	'('  shift 33
 	.  error
 
 
 state 14
+	while_statement:  WHILE.'(' expression ')' '{' statements '}' 
+
+	'('  shift 34
+	.  error
+
+
+state 15
 	statement:  expression SEPARATOR.    (3)
 
 	.  reduce 3 (src line 35)
 
 
-state 15
+state 16
 	expression:  expression '+'.expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
-
-	expression  goto 31
-
-state 16
-	expression:  expression '-'.expression 
-
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
-
-	expression  goto 32
-
-state 17
-	expression:  expression '*'.expression 
-
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
-
-	expression  goto 33
-
-state 18
-	expression:  expression '/'.expression 
-
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
-
-	expression  goto 34
-
-state 19
-	expression:  expression LE.expression 
-
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
 	expression  goto 35
 
-state 20
-	expression:  expression GE.expression 
+state 17
+	expression:  expression '-'.expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
 	expression  goto 36
 
-state 21
-	expression:  expression EQ.expression 
+state 18
+	expression:  expression '*'.expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
 	expression  goto 37
 
-state 22
-	expression:  expression NE.expression 
+state 19
+	expression:  expression '/'.expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
 	expression  goto 38
 
-state 23
-	expression:  expression OR.expression 
+state 20
+	expression:  expression LE.expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
 	expression  goto 39
 
-state 24
-	expression:  expression AND.expression 
+state 21
+	expression:  expression GE.expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
 	expression  goto 40
 
+state 22
+	expression:  expression EQ.expression 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	expression  goto 41
+
+state 23
+	expression:  expression NE.expression 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	expression  goto 42
+
+state 24
+	expression:  expression OR.expression 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	expression  goto 43
+
 state 25
+	expression:  expression AND.expression 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	expression  goto 44
+
+state 26
 	statement:  assignment SEPARATOR.    (4)
 
 	.  reduce 4 (src line 37)
 
 
-state 26
+state 27
+	statement:  reassignment SEPARATOR.    (5)
+
+	.  reduce 5 (src line 38)
+
+
+state 28
+	reassignment:  IDENTIFIER ASSIGN.expression 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	expression  goto 45
+
+state 29
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
@@ -270,88 +297,29 @@ state 26
 	expression:  expression.AND expression 
 	expression:  '(' expression.')' 
 
-	LE  shift 19
-	GE  shift 20
-	EQ  shift 21
-	NE  shift 22
-	OR  shift 23
-	AND  shift 24
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	')'  shift 41
+	LE  shift 20
+	GE  shift 21
+	EQ  shift 22
+	NE  shift 23
+	OR  shift 24
+	AND  shift 25
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	')'  shift 46
 	.  error
 
-
-state 27
-	expression:  expression.'+' expression 
-	expression:  expression.'-' expression 
-	expression:  expression.'*' expression 
-	expression:  expression.'/' expression 
-	expression:  expression.LE expression 
-	expression:  expression.GE expression 
-	expression:  expression.EQ expression 
-	expression:  expression.NE expression 
-	expression:  expression.OR expression 
-	expression:  expression.AND expression 
-	expression:  '-' expression.    (22)
-
-	.  reduce 22 (src line 61)
-
-
-state 28
-	assignment:  LET IDENTIFIER.ASSIGN expression 
-
-	ASSIGN  shift 42
-	.  error
-
-
-state 29
-	control_flow:  IF '('.expression ')' '{' statements '}' 
-	control_flow:  IF '('.expression ')' '{' statements '}' ELSE '{' statements '}' 
-
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
-
-	expression  goto 43
 
 state 30
-	while_statement:  WHILE '('.expression ')' '{' statements '}' 
+	expression:  IDENTIFIER.    (11)
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
-
-	expression  goto 44
-
-state 31
-	expression:  expression.'+' expression 
-	expression:  expression '+' expression.    (11)
-	expression:  expression.'-' expression 
-	expression:  expression.'*' expression 
-	expression:  expression.'/' expression 
-	expression:  expression.LE expression 
-	expression:  expression.GE expression 
-	expression:  expression.EQ expression 
-	expression:  expression.NE expression 
-	expression:  expression.OR expression 
-	expression:  expression.AND expression 
-
-	'*'  shift 17
-	'/'  shift 18
 	.  reduce 11 (src line 50)
 
 
-state 32
+state 31
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
-	expression:  expression '-' expression.    (12)
 	expression:  expression.'*' expression 
 	expression:  expression.'/' expression 
 	expression:  expression.LE expression 
@@ -360,17 +328,46 @@ state 32
 	expression:  expression.NE expression 
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
+	expression:  '-' expression.    (23)
 
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 12 (src line 51)
+	.  reduce 23 (src line 62)
+
+
+state 32
+	assignment:  LET IDENTIFIER.ASSIGN expression 
+
+	ASSIGN  shift 47
+	.  error
 
 
 state 33
+	control_flow:  IF '('.expression ')' '{' statements '}' 
+	control_flow:  IF '('.expression ')' '{' statements '}' ELSE '{' statements '}' 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	expression  goto 48
+
+state 34
+	while_statement:  WHILE '('.expression ')' '{' statements '}' 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	expression  goto 49
+
+state 35
 	expression:  expression.'+' expression 
+	expression:  expression '+' expression.    (12)
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
-	expression:  expression '*' expression.    (13)
 	expression:  expression.'/' expression 
 	expression:  expression.LE expression 
 	expression:  expression.GE expression 
@@ -379,15 +376,35 @@ state 33
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
 
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 12 (src line 51)
+
+
+state 36
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression '-' expression.    (13)
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  expression.LE expression 
+	expression:  expression.GE expression 
+	expression:  expression.EQ expression 
+	expression:  expression.NE expression 
+	expression:  expression.OR expression 
+	expression:  expression.AND expression 
+
+	'*'  shift 18
+	'/'  shift 19
 	.  reduce 13 (src line 52)
 
 
-state 34
+state 37
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
+	expression:  expression '*' expression.    (14)
 	expression:  expression.'/' expression 
-	expression:  expression '/' expression.    (14)
 	expression:  expression.LE expression 
 	expression:  expression.GE expression 
 	expression:  expression.EQ expression 
@@ -398,84 +415,20 @@ state 34
 	.  reduce 14 (src line 53)
 
 
-state 35
-	expression:  expression.'+' expression 
-	expression:  expression.'-' expression 
-	expression:  expression.'*' expression 
-	expression:  expression.'/' expression 
-	expression:  expression.LE expression 
-	expression:  expression LE expression.    (15)
-	expression:  expression.GE expression 
-	expression:  expression.EQ expression 
-	expression:  expression.NE expression 
-	expression:  expression.OR expression 
-	expression:  expression.AND expression 
-
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 15 (src line 54)
-
-
-state 36
-	expression:  expression.'+' expression 
-	expression:  expression.'-' expression 
-	expression:  expression.'*' expression 
-	expression:  expression.'/' expression 
-	expression:  expression.LE expression 
-	expression:  expression.GE expression 
-	expression:  expression GE expression.    (16)
-	expression:  expression.EQ expression 
-	expression:  expression.NE expression 
-	expression:  expression.OR expression 
-	expression:  expression.AND expression 
-
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 16 (src line 55)
-
-
-state 37
-	expression:  expression.'+' expression 
-	expression:  expression.'-' expression 
-	expression:  expression.'*' expression 
-	expression:  expression.'/' expression 
-	expression:  expression.LE expression 
-	expression:  expression.GE expression 
-	expression:  expression.EQ expression 
-	expression:  expression EQ expression.    (17)
-	expression:  expression.NE expression 
-	expression:  expression.OR expression 
-	expression:  expression.AND expression 
-
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 17 (src line 56)
-
-
 state 38
 	expression:  expression.'+' expression 
 	expression:  expression.'-' expression 
 	expression:  expression.'*' expression 
 	expression:  expression.'/' expression 
+	expression:  expression '/' expression.    (15)
 	expression:  expression.LE expression 
 	expression:  expression.GE expression 
 	expression:  expression.EQ expression 
 	expression:  expression.NE expression 
-	expression:  expression NE expression.    (18)
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
 
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 18 (src line 57)
+	.  reduce 15 (src line 54)
 
 
 state 39
@@ -484,18 +437,18 @@ state 39
 	expression:  expression.'*' expression 
 	expression:  expression.'/' expression 
 	expression:  expression.LE expression 
+	expression:  expression LE expression.    (16)
 	expression:  expression.GE expression 
 	expression:  expression.EQ expression 
 	expression:  expression.NE expression 
 	expression:  expression.OR expression 
-	expression:  expression OR expression.    (19)
 	expression:  expression.AND expression 
 
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 19 (src line 58)
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 16 (src line 55)
 
 
 state 40
@@ -505,35 +458,58 @@ state 40
 	expression:  expression.'/' expression 
 	expression:  expression.LE expression 
 	expression:  expression.GE expression 
+	expression:  expression GE expression.    (17)
 	expression:  expression.EQ expression 
 	expression:  expression.NE expression 
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
-	expression:  expression AND expression.    (20)
 
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 20 (src line 59)
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 17 (src line 56)
 
 
 state 41
-	expression:  '(' expression ')'.    (21)
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  expression.LE expression 
+	expression:  expression.GE expression 
+	expression:  expression.EQ expression 
+	expression:  expression EQ expression.    (18)
+	expression:  expression.NE expression 
+	expression:  expression.OR expression 
+	expression:  expression.AND expression 
 
-	.  reduce 21 (src line 60)
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 18 (src line 57)
 
 
 state 42
-	assignment:  LET IDENTIFIER ASSIGN.expression 
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  expression.LE expression 
+	expression:  expression.GE expression 
+	expression:  expression.EQ expression 
+	expression:  expression.NE expression 
+	expression:  expression NE expression.    (19)
+	expression:  expression.OR expression 
+	expression:  expression.AND expression 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	'-'  shift 10
-	'('  shift 9
-	.  error
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 19 (src line 58)
 
-	expression  goto 45
 
 state 43
 	expression:  expression.'+' expression 
@@ -545,22 +521,14 @@ state 43
 	expression:  expression.EQ expression 
 	expression:  expression.NE expression 
 	expression:  expression.OR expression 
+	expression:  expression OR expression.    (20)
 	expression:  expression.AND expression 
-	control_flow:  IF '(' expression.')' '{' statements '}' 
-	control_flow:  IF '(' expression.')' '{' statements '}' ELSE '{' statements '}' 
 
-	LE  shift 19
-	GE  shift 20
-	EQ  shift 21
-	NE  shift 22
-	OR  shift 23
-	AND  shift 24
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	')'  shift 46
-	.  error
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 20 (src line 59)
 
 
 state 44
@@ -574,20 +542,13 @@ state 44
 	expression:  expression.NE expression 
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
-	while_statement:  WHILE '(' expression.')' '{' statements '}' 
+	expression:  expression AND expression.    (21)
 
-	LE  shift 19
-	GE  shift 20
-	EQ  shift 21
-	NE  shift 22
-	OR  shift 23
-	AND  shift 24
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	')'  shift 47
-	.  error
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 21 (src line 60)
 
 
 state 45
@@ -601,178 +562,280 @@ state 45
 	expression:  expression.NE expression 
 	expression:  expression.OR expression 
 	expression:  expression.AND expression 
-	assignment:  LET IDENTIFIER ASSIGN expression.    (23)
+	reassignment:  IDENTIFIER ASSIGN expression.    (25)
 
-	LE  shift 19
-	GE  shift 20
-	EQ  shift 21
-	NE  shift 22
-	OR  shift 23
-	AND  shift 24
-	'+'  shift 15
-	'-'  shift 16
-	'*'  shift 17
-	'/'  shift 18
-	.  reduce 23 (src line 64)
+	LE  shift 20
+	GE  shift 21
+	EQ  shift 22
+	NE  shift 23
+	OR  shift 24
+	AND  shift 25
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 25 (src line 69)
 
 
 state 46
-	control_flow:  IF '(' expression ')'.'{' statements '}' 
-	control_flow:  IF '(' expression ')'.'{' statements '}' ELSE '{' statements '}' 
+	expression:  '(' expression ')'.    (22)
 
-	'{'  shift 48
-	.  error
+	.  reduce 22 (src line 61)
 
 
 state 47
-	while_statement:  WHILE '(' expression ')'.'{' statements '}' 
+	assignment:  LET IDENTIFIER ASSIGN.expression 
 
-	'{'  shift 49
+	NUMBER  shift 8
+	IDENTIFIER  shift 30
+	'-'  shift 11
+	'('  shift 10
 	.  error
 
+	expression  goto 50
 
 state 48
-	control_flow:  IF '(' expression ')' '{'.statements '}' 
-	control_flow:  IF '(' expression ')' '{'.statements '}' ELSE '{' statements '}' 
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  expression.LE expression 
+	expression:  expression.GE expression 
+	expression:  expression.EQ expression 
+	expression:  expression.NE expression 
+	expression:  expression.OR expression 
+	expression:  expression.AND expression 
+	control_flow:  IF '(' expression.')' '{' statements '}' 
+	control_flow:  IF '(' expression.')' '{' statements '}' ELSE '{' statements '}' 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	LET  shift 11
-	IF  shift 12
-	WHILE  shift 13
-	'-'  shift 10
-	'('  shift 9
+	LE  shift 20
+	GE  shift 21
+	EQ  shift 22
+	NE  shift 23
+	OR  shift 24
+	AND  shift 25
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	')'  shift 51
 	.  error
 
-	statements  goto 50
-	statement  goto 51
-	expression  goto 3
-	assignment  goto 4
-	control_flow  goto 5
-	while_statement  goto 6
 
 state 49
-	while_statement:  WHILE '(' expression ')' '{'.statements '}' 
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  expression.LE expression 
+	expression:  expression.GE expression 
+	expression:  expression.EQ expression 
+	expression:  expression.NE expression 
+	expression:  expression.OR expression 
+	expression:  expression.AND expression 
+	while_statement:  WHILE '(' expression.')' '{' statements '}' 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	LET  shift 11
-	IF  shift 12
-	WHILE  shift 13
-	'-'  shift 10
-	'('  shift 9
+	LE  shift 20
+	GE  shift 21
+	EQ  shift 22
+	NE  shift 23
+	OR  shift 24
+	AND  shift 25
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	')'  shift 52
 	.  error
 
-	statements  goto 52
-	statement  goto 51
-	expression  goto 3
-	assignment  goto 4
-	control_flow  goto 5
-	while_statement  goto 6
 
 state 50
-	control_flow:  IF '(' expression ')' '{' statements.'}' 
-	control_flow:  IF '(' expression ')' '{' statements.'}' ELSE '{' statements '}' 
+	expression:  expression.'+' expression 
+	expression:  expression.'-' expression 
+	expression:  expression.'*' expression 
+	expression:  expression.'/' expression 
+	expression:  expression.LE expression 
+	expression:  expression.GE expression 
+	expression:  expression.EQ expression 
+	expression:  expression.NE expression 
+	expression:  expression.OR expression 
+	expression:  expression.AND expression 
+	assignment:  LET IDENTIFIER ASSIGN expression.    (24)
 
-	'}'  shift 53
-	.  error
+	LE  shift 20
+	GE  shift 21
+	EQ  shift 22
+	NE  shift 23
+	OR  shift 24
+	AND  shift 25
+	'+'  shift 16
+	'-'  shift 17
+	'*'  shift 18
+	'/'  shift 19
+	.  reduce 24 (src line 65)
 
 
 state 51
-	statements:  statement.statements 
-	statements:  statement.    (8)
+	control_flow:  IF '(' expression ')'.'{' statements '}' 
+	control_flow:  IF '(' expression ')'.'{' statements '}' ELSE '{' statements '}' 
 
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	LET  shift 11
-	IF  shift 12
-	WHILE  shift 13
-	'-'  shift 10
-	'('  shift 9
-	.  reduce 8 (src line 44)
+	'{'  shift 53
+	.  error
 
-	statements  goto 54
-	statement  goto 51
-	expression  goto 3
-	assignment  goto 4
-	control_flow  goto 5
-	while_statement  goto 6
 
 state 52
-	while_statement:  WHILE '(' expression ')' '{' statements.'}' 
+	while_statement:  WHILE '(' expression ')'.'{' statements '}' 
 
-	'}'  shift 55
+	'{'  shift 54
 	.  error
 
 
 state 53
-	control_flow:  IF '(' expression ')' '{' statements '}'.    (24)
-	control_flow:  IF '(' expression ')' '{' statements '}'.ELSE '{' statements '}' 
+	control_flow:  IF '(' expression ')' '{'.statements '}' 
+	control_flow:  IF '(' expression ')' '{'.statements '}' ELSE '{' statements '}' 
 
-	ELSE  shift 56
-	.  reduce 24 (src line 68)
+	NUMBER  shift 8
+	IDENTIFIER  shift 9
+	LET  shift 12
+	IF  shift 13
+	WHILE  shift 14
+	'-'  shift 11
+	'('  shift 10
+	.  error
 
+	statements  goto 55
+	statement  goto 56
+	expression  goto 3
+	assignment  goto 4
+	reassignment  goto 5
+	control_flow  goto 6
+	while_statement  goto 7
 
 state 54
-	statements:  statement statements.    (7)
+	while_statement:  WHILE '(' expression ')' '{'.statements '}' 
 
-	.  reduce 7 (src line 42)
+	NUMBER  shift 8
+	IDENTIFIER  shift 9
+	LET  shift 12
+	IF  shift 13
+	WHILE  shift 14
+	'-'  shift 11
+	'('  shift 10
+	.  error
 
+	statements  goto 57
+	statement  goto 56
+	expression  goto 3
+	assignment  goto 4
+	reassignment  goto 5
+	control_flow  goto 6
+	while_statement  goto 7
 
 state 55
-	while_statement:  WHILE '(' expression ')' '{' statements '}'.    (26)
+	control_flow:  IF '(' expression ')' '{' statements.'}' 
+	control_flow:  IF '(' expression ')' '{' statements.'}' ELSE '{' statements '}' 
 
-	.  reduce 26 (src line 73)
+	'}'  shift 58
+	.  error
 
 
 state 56
-	control_flow:  IF '(' expression ')' '{' statements '}' ELSE.'{' statements '}' 
+	statements:  statement.statements 
+	statements:  statement.    (9)
 
-	'{'  shift 57
-	.  error
+	NUMBER  shift 8
+	IDENTIFIER  shift 9
+	LET  shift 12
+	IF  shift 13
+	WHILE  shift 14
+	'-'  shift 11
+	'('  shift 10
+	.  reduce 9 (src line 45)
 
-
-state 57
-	control_flow:  IF '(' expression ')' '{' statements '}' ELSE '{'.statements '}' 
-
-	NUMBER  shift 7
-	IDENTIFIER  shift 8
-	LET  shift 11
-	IF  shift 12
-	WHILE  shift 13
-	'-'  shift 10
-	'('  shift 9
-	.  error
-
-	statements  goto 58
-	statement  goto 51
+	statements  goto 59
+	statement  goto 56
 	expression  goto 3
 	assignment  goto 4
-	control_flow  goto 5
-	while_statement  goto 6
+	reassignment  goto 5
+	control_flow  goto 6
+	while_statement  goto 7
+
+state 57
+	while_statement:  WHILE '(' expression ')' '{' statements.'}' 
+
+	'}'  shift 60
+	.  error
+
 
 state 58
-	control_flow:  IF '(' expression ')' '{' statements '}' ELSE '{' statements.'}' 
+	control_flow:  IF '(' expression ')' '{' statements '}'.    (26)
+	control_flow:  IF '(' expression ')' '{' statements '}'.ELSE '{' statements '}' 
 
-	'}'  shift 59
-	.  error
+	ELSE  shift 61
+	.  reduce 26 (src line 73)
 
 
 state 59
-	control_flow:  IF '(' expression ')' '{' statements '}' ELSE '{' statements '}'.    (25)
+	statements:  statement statements.    (8)
 
-	.  reduce 25 (src line 70)
+	.  reduce 8 (src line 43)
 
 
-28 terminals, 8 nonterminals
-27 grammar rules, 60/8000 states
+state 60
+	while_statement:  WHILE '(' expression ')' '{' statements '}'.    (28)
+
+	.  reduce 28 (src line 78)
+
+
+state 61
+	control_flow:  IF '(' expression ')' '{' statements '}' ELSE.'{' statements '}' 
+
+	'{'  shift 62
+	.  error
+
+
+state 62
+	control_flow:  IF '(' expression ')' '{' statements '}' ELSE '{'.statements '}' 
+
+	NUMBER  shift 8
+	IDENTIFIER  shift 9
+	LET  shift 12
+	IF  shift 13
+	WHILE  shift 14
+	'-'  shift 11
+	'('  shift 10
+	.  error
+
+	statements  goto 63
+	statement  goto 56
+	expression  goto 3
+	assignment  goto 4
+	reassignment  goto 5
+	control_flow  goto 6
+	while_statement  goto 7
+
+state 63
+	control_flow:  IF '(' expression ')' '{' statements '}' ELSE '{' statements.'}' 
+
+	'}'  shift 64
+	.  error
+
+
+state 64
+	control_flow:  IF '(' expression ')' '{' statements '}' ELSE '{' statements '}'.    (27)
+
+	.  reduce 27 (src line 75)
+
+
+28 terminals, 9 nonterminals
+29 grammar rules, 65/8000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-57 working sets used
-memory: parser 44/120000
-49 extra closures
-189 shift entries, 1 exceptions
-26 goto entries
-19 entries saved by goto default
-Optimizer space used: output 128/120000
-128 table entries, 19 zero
-maximum spread: 28, maximum offset: 57
+58 working sets used
+memory: parser 50/120000
+50 extra closures
+205 shift entries, 1 exceptions
+28 goto entries
+23 entries saved by goto default
+Optimizer space used: output 133/120000
+133 table entries, 20 zero
+maximum spread: 28, maximum offset: 62

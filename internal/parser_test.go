@@ -24,7 +24,7 @@ func (suite *TestSuite) TestParser() {
 		},
 		{
 			name:      "variable",
-			inputPath: "../testdata/variable.test",
+			inputPath: "../testdata/assignment.test",
 			expected:  0,
 		},
 		{

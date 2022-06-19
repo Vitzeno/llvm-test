@@ -14,7 +14,7 @@ Ast ast
 
 %token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LE GE EQ NE OR AND ELSE WHILE
 
-%type <Ast> statements statement expression assignment control_flow while_statement
+%type <Ast> statements statement expression assignment reassignment control_flow while_statement
 
 %nonassoc NO_ELSE
 %nonassoc ELSE
@@ -35,6 +35,7 @@ program :  /* empty */
 statement:
      expression SEPARATOR
      | assignment SEPARATOR
+     | reassignment SEPARATOR
      | control_flow
      | while_statement
      ;
@@ -63,6 +64,10 @@ expression:
     
 assignment:
      LET IDENTIFIER ASSIGN expression { $$ = &assignment{variable: $2, expr: $4} }
+     ;
+
+reassignment:
+     IDENTIFIER ASSIGN expression { $$ = &reassignment{variable: $1, expr: $3} }
      ;
 
 control_flow:
