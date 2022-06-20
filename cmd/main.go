@@ -8,9 +8,10 @@ import (
 	"github.com/vitzeno/llvm-test/internal"
 )
 
-const sourceFile = "testdata/mock"
+const sourceFile = "asm/mock"
 
 func main() {
+	internal.InitCodeGen()
 	internal.YYDebug = 0
 	file, err := os.Open(sourceFile)
 	if err != nil {

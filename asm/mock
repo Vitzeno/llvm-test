@@ -1,0 +1,8 @@
+let a = (5 * 5) + (5 * 5);
+
+if (a < 10) {
+    print(a);
+} else {
+    print(0);
+}
+

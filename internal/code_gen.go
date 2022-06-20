@@ -3,15 +3,44 @@ package internal
 import (
 	"fmt"
 	"io"
+	"runtime"
+	"strconv"
 
 	"github.com/llir/llvm/ir"
 	"github.com/llir/llvm/ir/constant"
+	"github.com/llir/llvm/ir/enum"
 	"github.com/llir/llvm/ir/types"
 )
 
-var module = ir.NewModule()
-var entry = module.NewFunc("main", types.I32)
-var block = entry.NewBlock("")
+var module *ir.Module
+var printf *ir.Func
+var entry *ir.Func
+var block *ir.Block
+var asmFunc *ir.InlineAsm
+
+func InitCodeGen() {
+	module = ir.NewModule()
+	os := runtime.GOOS
+	switch os {
+	case "windows":
+		module.TargetTriple = "x86_64-pc-windows-msvc"
+	case "darwin":
+		module.TargetTriple = "x86_64-apple-darwin"
+	case "linux":
+		module.TargetTriple = "x86_64-pc-linux-gnu"
+	default:
+		panic("unknown OS")
+	}
+
+	entry = module.NewFunc("main", types.I32)
+	block = entry.NewBlock("entry")
+
+	printf = module.NewFunc("printf", types.I32, ir.NewParam("", types.NewPointer(types.I8)))
+	printf.Sig.Variadic = true
+
+	asmFunc = ir.NewInlineAsm(types.NewPointer(types.NewFunc(types.I64)), "syscall", "=r,{rax},{rdi},{rsi},{rdx}")
+	asmFunc.SideEffect = true
+}
 
 func (l *Lexer) codeGen(a ast) {
 	switch e := a.(type) {
@@ -31,9 +60,101 @@ func (l *Lexer) codeGen(a ast) {
 				return
 			}
 			block.NewFDiv(lhs, rhs)
+		case ">":
+			block.NewFCmp(enum.FPredOGE, lhs, rhs)
+		case "<":
+			block.NewFCmp(enum.FPredOLE, lhs, rhs)
+		case "==":
+			block.NewFCmp(enum.FPredOEQ, lhs, rhs)
+		case "NE":
+			block.NewFCmp(enum.FPredONE, lhs, rhs)
+		case "OR":
+			block.NewOr(lhs, rhs)
+		case "AND":
+			block.NewAnd(lhs, rhs)
 		default:
 			panic("unknown operator")
 		}
+
+	case *unaryExpr:
+		// fallrthrough to eval
+		l.eval(e.expr)
+
+	case *astRoot:
+		l.codeGen(e.expr)
+
+	case *parenExpr:
+		// fallrthrough to eval
+		l.eval(e.expr)
+
+	case *variable:
+		_, ok := l.variables[e.name]
+		if !ok {
+			l.Error(fmt.Sprintf("undefined variable: %s", e.name))
+		}
+
+	case *number:
+		var err error
+		_, err = strconv.ParseFloat(e.value, 64)
+		if err != nil {
+			l.Error("invalid number")
+		}
+
+	case *assignment:
+		_, ok := l.variables[e.variable]
+		if ok {
+			l.Error(fmt.Sprintf("variable already defined: %s", e.variable))
+		}
+
+		result := l.eval(e.expr)
+		if !l.evalFailed {
+			l.variables[e.variable] = result
+			variable := block.NewAlloca(types.Double)
+			variable.SetName(e.variable)
+			block.NewStore(constant.NewFloat(types.Double, result), variable)
+		}
+
+	case *reassignment:
+		_, ok := l.variables[e.variable]
+		if !ok {
+			l.Error(fmt.Sprintf("undefined variable: %s", e.variable))
+		}
+
+		result := l.eval(e.expr)
+		if !l.evalFailed {
+			l.variables[e.variable] = result
+			//TODO: update variable
+		}
+
+	case *stdPrint:
+		result := l.eval(e.expr)
+		if !l.evalFailed {
+			variable := block.NewAlloca(types.I8)
+			variable.SetName("msg")
+			block.NewCall(printf, variable, constant.NewInt(types.I32, int64(result)))
+		}
+
+	case *ifStatement:
+		//TODO: proper implementation
+		if l.eval(e.cond) != 0 {
+			//entry.NewBlock("if.then")
+			l.codeGen(e.thenStmt)
+		} else if e.elseStmt != nil {
+			//entry.NewBlock("if.else")
+			l.codeGen(e.elseStmt)
+		}
+
+	case *whileStatement:
+		//TODO: proper implementation
+		initBlock := block
+		whileCond := entry.NewBlock("while.cond")
+		block = entry.NewBlock("while.body")
+		if l.eval(e.cond) != 0 {
+			l.codeGen(e.body)
+			block.NewBr(whileCond)
+		}
+		block = initBlock
+
 	default:
 		panic("unknown node type")
 	}
@@ -45,6 +166,6 @@ func WriteToFile(w io.Writer) {
 }
 
 func PrintCode() {
-	block.NewRet(constant.NewFloat(types.Double, 0))
-	fmt.Printf("module.String(): %v\n", module.String())
+	block.NewRet(constant.NewInt(types.I32, 0))
+	fmt.Printf("%v\n", module.String())
 }

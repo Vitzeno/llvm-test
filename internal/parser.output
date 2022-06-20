@@ -902,14 +902,14 @@ state 70
 
 
 29 terminals, 10 nonterminals
-31 grammar rules, 71/16000 states
+31 grammar rules, 71/8000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 59 working sets used
-memory: parser 56/240000
+memory: parser 56/120000
 52 extra closures
 227 shift entries, 1 exceptions
 30 goto entries
 27 entries saved by goto default
-Optimizer space used: output 160/240000
+Optimizer space used: output 160/120000
 160 table entries, 31 zero
 maximum spread: 29, maximum offset: 68
