@@ -12,11 +12,12 @@ import (
 	"github.com/llir/llvm/ir/types"
 )
 
-var module *ir.Module
-var printf *ir.Func
-var entry *ir.Func
-var block *ir.Block
-var asmFunc *ir.InlineAsm
+var (
+	module *ir.Module
+	printf *ir.Func
+	entry  *ir.Func
+	block  *ir.Block
+)
 
 func InitCodeGen() {
 	module = ir.NewModule()
