@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"unicode"
+
+	"github.com/llir/llvm/ir"
 )
 
 type Position struct {
@@ -12,9 +14,14 @@ type Position struct {
 	col  int
 }
 
+type varible struct {
+	location *ir.InstAlloca
+	value    float64
+}
+
 type Lexer struct {
 	pos         Position
-	variables   map[string]float64
+	variables   map[string]varible
 	evalFailed  bool
 	parseResult ast
 	reader      *bufio.Reader
@@ -23,7 +30,7 @@ type Lexer struct {
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
 		pos:         Position{line: 1, col: 0},
-		variables:   make(map[string]float64),
+		variables:   make(map[string]varible),
 		parseResult: &astRoot{},
 		reader:      bufio.NewReader(reader),
 	}
@@ -62,13 +69,13 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 				l.backup()
 				digit := l.lexInt()
 				lval.String = digit
-				fmt.Printf("digit: %v\n", digit)
+				//fmt.Printf("digit: %v\n", digit)
 				return tokenNumber
 			} else if unicode.IsLetter(r) {
 				// backup and let lexIdentifier rescan the beginning of the identifier
 				l.backup()
 				lit := l.lexIdentifier()
-				fmt.Printf("letter: %v\n", lit)
+				//fmt.Printf("letter: %v\n", lit)
 				switch lit {
 				case "let":
 					lval.String = lit
@@ -105,7 +112,7 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 				// backup and let lexSymbol rescan the beginning of the identifier
 				l.backup()
 				symbol := l.lexSymbol()
-				fmt.Printf("symbol: %v\n", symbol)
+				//fmt.Printf("symbol: %v\n", symbol)
 				switch symbol {
 				case "+": // special case for + fallthrough since handled in parser
 					return int(r)

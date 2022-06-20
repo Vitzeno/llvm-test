@@ -7,5 +7,11 @@ parser-gen:
 run:
 	@go run cmd/main.go
 
+clang:
+	@clang asm/mock.ll -o asm/mock.out
+
+run-bin:
+	@./asm/mock.out
+
 test:
 	@go test -v ./...
