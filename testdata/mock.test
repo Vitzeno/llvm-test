@@ -1,0 +1,7 @@
+let a = 10;
+
+if ((a * 2) > a) {
+    print(1);
+} else {
+    print(0);
+}

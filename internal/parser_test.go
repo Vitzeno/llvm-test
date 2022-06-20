@@ -37,6 +37,11 @@ func (suite *TestSuite) TestParser() {
 			inputPath: "../testdata/while.test",
 			expected:  0,
 		},
+		{
+			name:      "print",
+			inputPath: "../testdata/print.test",
+			expected:  0,
+		},
 	} {
 		suite.T().Run(tc.name, func(t *testing.T) {
 			file, err := os.Open(tc.inputPath)

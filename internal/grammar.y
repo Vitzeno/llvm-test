@@ -1,10 +1,6 @@
 %{
 package internal
 
-import (
-     "fmt"
-)
-
 %}
 
 %union{
@@ -12,9 +8,9 @@ String string
 Ast ast 
 }
 
-%token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LE GE EQ NE OR AND ELSE WHILE
+%token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LE GE EQ NE OR AND ELSE WHILE PRINT
 
-%type <Ast> statements statement expression assignment reassignment control_flow while_statement
+%type <Ast> statements statement expression assignment reassignment print control_flow while_statement
 
 %nonassoc NO_ELSE
 %nonassoc ELSE
@@ -29,13 +25,14 @@ Ast ast
 
 %%
 program :  /* empty */
-     | program statement { fmt.Println(YYlex.(*Lexer).eval($2)) } 
+     | program statement { YYlex.(*Lexer).eval($2) } 
      ;
 
 statement:
      expression SEPARATOR
      | assignment SEPARATOR
      | reassignment SEPARATOR
+     | print SEPARATOR
      | control_flow
      | while_statement
      ;
@@ -68,6 +65,10 @@ assignment:
 
 reassignment:
      IDENTIFIER ASSIGN expression { $$ = &reassignment{variable: $1, expr: $3} }
+     ;
+
+print:
+     PRINT '(' expression ')' { $$ = &stdPrint{expr: $3} }
      ;
 
 control_flow:

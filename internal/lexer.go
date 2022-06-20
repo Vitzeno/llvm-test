@@ -73,6 +73,9 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 				case "let":
 					lval.String = lit
 					return tokenLet
+				case "print":
+					lval.String = lit
+					return tokenPrint
 				case "if":
 					lval.String = lit
 					return tokenIf

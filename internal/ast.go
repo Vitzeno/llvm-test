@@ -43,6 +43,10 @@ type reassignment struct {
 	expr     ast
 }
 
+type stdPrint struct {
+	expr ast
+}
+
 type ifStatement struct {
 	cond     ast
 	thenStmt ast
@@ -110,9 +114,6 @@ func (l *Lexer) eval(a ast) float64 {
 
 	case *astRoot:
 		result := l.eval(e.expr)
-		if !l.evalFailed {
-			fmt.Println(result)
-		}
 		return result
 
 	case *parenExpr:
@@ -154,6 +155,13 @@ func (l *Lexer) eval(a ast) float64 {
 		result := l.eval(e.expr)
 		if !l.evalFailed {
 			l.variables[e.variable] = result
+		}
+		return result
+
+	case *stdPrint:
+		result := l.eval(e.expr)
+		if !l.evalFailed {
+			fmt.Println(result)
 		}
 		return result
 
