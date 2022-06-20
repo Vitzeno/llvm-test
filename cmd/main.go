@@ -8,7 +8,7 @@ import (
 
 func main() {
 	internal.YYDebug = 0
-	file, err := os.Open("testdata/while.test")
+	file, err := os.Open("testdata/mock.test")
 	if err != nil {
 		panic(err)
 	}

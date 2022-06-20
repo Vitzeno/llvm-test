@@ -20,4 +20,5 @@ const (
 	tokenOr         = OR         // ||
 	tokenAnd        = AND        // &&
 	tokenWhile      = WHILE      // while keyword
+	tokenPrint      = PRINT      // print keyword
 )
