@@ -1,8 +1,10 @@
-let a = (5 * 5) + (5 * 5);
+let a = 5;
+let b = 5;
 
-if (a < 10) {
+a = 10;
+
+if (a + b < 12) {
     print(a);
 } else {
-    print(0);
+    print(25);
 }
-

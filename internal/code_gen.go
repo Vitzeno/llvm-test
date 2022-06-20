@@ -29,7 +29,7 @@ func InitCodeGen() {
 	case "linux":
 		module.TargetTriple = "x86_64-pc-linux-gnu"
 	default:
-		panic("unknown OS")
+		panic("unknown OS target")
 	}
 
 	entry = module.NewFunc("main", types.I32)
@@ -37,9 +37,6 @@ func InitCodeGen() {
 
 	printf = module.NewFunc("printf", types.I32, ir.NewParam("", types.NewPointer(types.I8)))
 	printf.Sig.Variadic = true
-
-	asmFunc = ir.NewInlineAsm(types.NewPointer(types.NewFunc(types.I64)), "syscall", "=r,{rax},{rdi},{rsi},{rdx}")
-	asmFunc.SideEffect = true
 }
 
 func (l *Lexer) codeGen(a ast) {
@@ -108,10 +105,10 @@ func (l *Lexer) codeGen(a ast) {
 
 		result := l.eval(e.expr)
 		if !l.evalFailed {
-			l.variables[e.variable] = result
 			variable := block.NewAlloca(types.Double)
 			variable.SetName(e.variable)
 			block.NewStore(constant.NewFloat(types.Double, result), variable)
+			l.variables[e.variable] = varible{location: variable, value: result}
 		}
 
 	case *reassignment:
@@ -122,8 +119,8 @@ func (l *Lexer) codeGen(a ast) {
 
 		result := l.eval(e.expr)
 		if !l.evalFailed {
-			l.variables[e.variable] = result
-			//TODO: update variable
+			block.NewStore(constant.NewFloat(types.Double, result), l.variables[e.variable].location)
+			l.variables[e.variable] = varible{location: l.variables[e.variable].location, value: result}
 		}
 
 	case *stdPrint:
@@ -137,10 +134,8 @@ func (l *Lexer) codeGen(a ast) {
 	case *ifStatement:
 		//TODO: proper implementation
 		if l.eval(e.cond) != 0 {
-			//entry.NewBlock("if.then")
 			l.codeGen(e.thenStmt)
 		} else if e.elseStmt != nil {
-			//entry.NewBlock("if.else")
 			l.codeGen(e.elseStmt)
 		}
 

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"unicode"
+
+	"github.com/llir/llvm/ir"
 )
 
 type Position struct {
@@ -12,9 +14,14 @@ type Position struct {
 	col  int
 }
 
+type varible struct {
+	location *ir.InstAlloca
+	value    float64
+}
+
 type Lexer struct {
 	pos         Position
-	variables   map[string]float64
+	variables   map[string]varible
 	evalFailed  bool
 	parseResult ast
 	reader      *bufio.Reader
@@ -23,7 +30,7 @@ type Lexer struct {
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
 		pos:         Position{line: 1, col: 0},
-		variables:   make(map[string]float64),
+		variables:   make(map[string]varible),
 		parseResult: &astRoot{},
 		reader:      bufio.NewReader(reader),
 	}

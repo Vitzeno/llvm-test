@@ -124,7 +124,7 @@ func (l *Lexer) eval(a ast) float64 {
 		if !ok {
 			l.Error(fmt.Sprintf("undefined variable: %s", e.name))
 		}
-		return val
+		return val.value
 
 	case *number:
 		var err error
@@ -142,7 +142,7 @@ func (l *Lexer) eval(a ast) float64 {
 
 		result := l.eval(e.expr)
 		if !l.evalFailed {
-			l.variables[e.variable] = result
+			l.variables[e.variable] = varible{location: nil, value: result}
 		}
 		return result
 
@@ -154,7 +154,7 @@ func (l *Lexer) eval(a ast) float64 {
 
 		result := l.eval(e.expr)
 		if !l.evalFailed {
-			l.variables[e.variable] = result
+			l.variables[e.variable] = varible{location: l.variables[e.variable].location, value: result}
 		}
 		return result
 
