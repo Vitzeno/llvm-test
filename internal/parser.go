@@ -520,7 +520,7 @@ YYdefault:
 		YYDollar = YYS[YYpt-2 : YYpt+1]
 //line internal/grammar.y:28
 		{
-			YYlex.(*Lexer).eval(YYDollar[2].Ast)
+			YYlex.(*Lexer).codeGen(YYDollar[2].Ast)
 		}
 	case 11:
 		YYDollar = YYS[YYpt-1 : YYpt+1]

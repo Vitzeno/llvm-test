@@ -25,7 +25,7 @@ Ast ast
 
 %%
 program :  /* empty */
-     | program statement { YYlex.(*Lexer).eval($2) } 
+     | program statement { YYlex.(*Lexer).codeGen($2) } 
      ;
 
 statement:
