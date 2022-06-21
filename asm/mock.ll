@@ -1,14 +1,18 @@
-target triple = "x86_64-pc-linux-gnu"
+target triple = "x86_64-apple-darwin"
 
 define i32 @main() {
-entry:
+main:
 	%a = alloca double
-	store double 5.0, double* %a
-	%b = alloca double
-	store double 5.0, double* %b
-	store double 10.0, double* %a
-	%msg = alloca i8
-	%0 = call i32 (i8*, ...) @printf(i8* %msg, i32 25)
+	store double 23.0, double* %a
+	br i1 false, label %0, label %1
+
+0:
+	br label %2
+
+1:
+	br label %2
+
+2:
 	ret i32 0
 }
 

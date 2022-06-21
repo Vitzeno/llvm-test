@@ -34,7 +34,8 @@ func InitCodeGen() {
 	}
 
 	entry = module.NewFunc("main", types.I32)
-	block = entry.NewBlock("entry")
+	block = entry.NewBlock("main")
+	block.NewRet(constant.NewInt(types.I32, 0))
 
 	printf = module.NewFunc("printf", types.I32, ir.NewParam("", types.NewPointer(types.I8)))
 	printf.Sig.Variadic = true
@@ -134,11 +135,21 @@ func (l *Lexer) codeGen(a ast) {
 
 	case *ifStatement:
 		//TODO: proper implementation
-		if l.eval(e.cond) != 0 {
-			l.codeGen(e.thenStmt)
-		} else if e.elseStmt != nil {
-			l.codeGen(e.elseStmt)
-		}
+		condStmt := constant.NewInt(types.I1, int64(l.eval(e.cond)))
+
+		iftrue := entry.NewBlock("")
+		iffalse := entry.NewBlock("")
+		ifend := entry.NewBlock("")
+
+		block.NewCondBr(condStmt, iftrue, iffalse)
+
+		iftrue.NewBr(ifend)
+		// add instructions to iftrue
+
+		iffalse.NewBr(ifend)
+		// add instructions to iffalse
+
+		ifend.NewRet(constant.NewInt(types.I32, 0))
 
 	case *whileStatement:
 		//TODO: proper implementation
@@ -157,11 +168,9 @@ func (l *Lexer) codeGen(a ast) {
 }
 
 func WriteToFile(w io.Writer) {
-	block.NewRet(constant.NewInt(types.I32, 0))
 	module.WriteTo(w)
 }
 
 func PrintCode() {
-	block.NewRet(constant.NewInt(types.I32, 0))
 	fmt.Printf("%v\n", module.String())
 }

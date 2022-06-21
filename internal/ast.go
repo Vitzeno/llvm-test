@@ -134,53 +134,7 @@ func (l *Lexer) eval(a ast) float64 {
 		}
 		return val
 
-	case *assignment:
-		_, ok := l.variables[e.variable]
-		if ok {
-			l.Error(fmt.Sprintf("variable already defined: %s", e.variable))
-		}
-
-		result := l.eval(e.expr)
-		if !l.evalFailed {
-			l.variables[e.variable] = varible{location: nil, value: result}
-		}
-		return result
-
-	case *reassignment:
-		_, ok := l.variables[e.variable]
-		if !ok {
-			l.Error(fmt.Sprintf("undefined variable: %s", e.variable))
-		}
-
-		result := l.eval(e.expr)
-		if !l.evalFailed {
-			l.variables[e.variable] = varible{location: l.variables[e.variable].location, value: result}
-		}
-		return result
-
-	case *stdPrint:
-		result := l.eval(e.expr)
-		if !l.evalFailed {
-			fmt.Println(result)
-		}
-		return result
-
-	case *ifStatement:
-		if l.eval(e.cond) != 0 {
-			return l.eval(e.thenStmt)
-		}
-		if e.elseStmt != nil {
-			return l.eval(e.elseStmt)
-		}
-		return 0
-
-	case *whileStatement:
-		for l.eval(e.cond) != 0 {
-			l.eval(e.body)
-		}
-		return 0
-
 	default:
-		panic("unknown node type")
+		panic(fmt.Sprintf("unknown ast type: %T", a))
 	}
 }
