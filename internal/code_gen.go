@@ -10,6 +10,7 @@ import (
 	"github.com/llir/llvm/ir/constant"
 	"github.com/llir/llvm/ir/enum"
 	"github.com/llir/llvm/ir/types"
+	"github.com/llir/llvm/ir/value"
 )
 
 var (
@@ -40,36 +41,40 @@ func InitCodeGen() {
 	printf.Sig.Variadic = true
 }
 
-func (l *Lexer) codeGen(a ast) {
+func (l *Lexer) compileConstant(a ast) value.Value {
+	return constant.NewFloat(types.Double, l.eval(a))
+}
+
+func (l *Lexer) codeGen(a ast) value.Value {
 	switch e := a.(type) {
 	case *binaryExpr:
-		lhs := constant.NewFloat(types.Double, l.eval(e.lhs))
-		rhs := constant.NewFloat(types.Double, l.eval(e.rhs))
+		lhs := l.compileConstant(e.lhs)
+		rhs := l.compileConstant(e.lhs)
 		switch e.Op {
 		case "+":
-			block.NewFAdd(lhs, rhs)
+			return block.NewFAdd(lhs, rhs)
 		case "-":
-			block.NewFSub(lhs, rhs)
+			return block.NewFSub(lhs, rhs)
 		case "*":
-			block.NewFMul(lhs, rhs)
+			return block.NewFMul(lhs, rhs)
 		case "/":
 			if l.eval(e.rhs) == 0 {
 				l.Error("Division by zero")
-				return
+				return nil
 			}
-			block.NewFDiv(lhs, rhs)
+			return block.NewFDiv(lhs, rhs)
 		case ">":
-			block.NewFCmp(enum.FPredOGE, lhs, rhs)
+			return block.NewFCmp(enum.FPredOGE, lhs, rhs)
 		case "<":
-			block.NewFCmp(enum.FPredOLE, lhs, rhs)
+			return block.NewFCmp(enum.FPredOLE, lhs, rhs)
 		case "==":
-			block.NewFCmp(enum.FPredOEQ, lhs, rhs)
+			return block.NewFCmp(enum.FPredOEQ, lhs, rhs)
 		case "NE":
-			block.NewFCmp(enum.FPredONE, lhs, rhs)
+			return block.NewFCmp(enum.FPredONE, lhs, rhs)
 		case "OR":
-			block.NewOr(lhs, rhs)
+			return block.NewOr(lhs, rhs)
 		case "AND":
-			block.NewAnd(lhs, rhs)
+			return block.NewAnd(lhs, rhs)
 		default:
 			panic("unknown operator")
 		}
@@ -133,11 +138,30 @@ func (l *Lexer) codeGen(a ast) {
 		}
 
 	case *ifStatement:
-		//TODO: proper implementation
-		if l.eval(e.cond) != 0 {
-			l.codeGen(e.thenStmt)
-		} else if e.elseStmt != nil {
+		thenB := entry.NewBlock("if.then")
+		var elseB *ir.Block
+		if e.elseStmt != nil {
+			elseB = entry.NewBlock("if.else")
+		} else {
+			elseB = nil
+		}
+
+		cond := l.codeGen(e.cond)
+		if !l.evalFailed {
+			block.NewCondBr(cond, thenB, elseB)
+		}
+		block = thenB
+		l.codeGen(e.thenStmt)
+		if !l.evalFailed {
+			block.NewBr(block)
+		}
+
+		if e.elseStmt != nil {
+			block = elseB
 			l.codeGen(e.elseStmt)
+			if !l.evalFailed {
+				block.NewBr(block)
+			}
 		}
 
 	case *whileStatement:
@@ -154,6 +178,8 @@ func (l *Lexer) codeGen(a ast) {
 	default:
 		panic("unknown node type")
 	}
+
+	return nil
 }
 
 func WriteToFile(w io.Writer) {
