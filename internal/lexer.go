@@ -9,6 +9,7 @@ import (
 	"github.com/llir/llvm/ir"
 )
 
+// Position tracks the position of the lexer
 type Position struct {
 	line int
 	col  int
@@ -19,14 +20,18 @@ type varible struct {
 	value    float64
 }
 
+// Lexer is the lexer struct
 type Lexer struct {
 	pos         Position
 	variables   map[string]varible
 	evalFailed  bool
 	parseResult ast
 	reader      *bufio.Reader
+	errors      []string
+	//buffer      bytes.Buffer // Buffer to store tokens temporarily
 }
 
+// NewLexer creates a new lexer
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
 		pos:         Position{line: 1, col: 0},
@@ -36,12 +41,18 @@ func NewLexer(reader io.Reader) *Lexer {
 	}
 }
 
+// Error is the error handler for the lexer
 func (l *Lexer) Error(e string) {
-	fmt.Println(e)
-	fmt.Printf("Line: %d, Col: %d\n", l.pos.line, l.pos.col)
+	l.errors = append(l.errors, fmt.Sprintf("Error: %s Line: %d, Col: %d", e, l.pos.line, l.pos.col))
 	l.evalFailed = true
 }
 
+// Errors returns the errors
+func (l *Lexer) Errors() []string {
+	return l.errors
+}
+
+// Lex is the main lexer function
 func (l *Lexer) Lex(lval *YYSymType) int {
 	//spew.Dump(l.variables)
 	for {
@@ -136,6 +147,7 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 	}
 }
 
+// lexInt scans the input for an integer
 func (l *Lexer) lexInt() string {
 	var lit string
 	for {
@@ -157,6 +169,7 @@ func (l *Lexer) lexInt() string {
 	}
 }
 
+// lexSymbol scans the input for a symbol
 func (l *Lexer) lexSymbol() string {
 	var lit string
 	for {
@@ -178,6 +191,7 @@ func (l *Lexer) lexSymbol() string {
 	}
 }
 
+// lexIdentifier scans the input for an identifier
 func (l *Lexer) lexIdentifier() string {
 	var lit string
 	for {
@@ -199,11 +213,13 @@ func (l *Lexer) lexIdentifier() string {
 	}
 }
 
+// resetPosition resets the column and increments the line
 func (l *Lexer) resetPosition() {
 	l.pos.line++
 	l.pos.col = 0
 }
 
+// backup moves the reader back one rune
 func (l *Lexer) backup() {
 	if err := l.reader.UnreadRune(); err != nil {
 		panic(err)

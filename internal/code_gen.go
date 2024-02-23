@@ -106,7 +106,7 @@ func (l *Lexer) codeGen(a ast) value.Value {
 	case *assignment:
 		_, ok := l.variables[e.variable]
 		if ok {
-			l.Error(fmt.Sprintf("variable already defined: %s", e.variable))
+			l.Error(fmt.Sprintf("variable [%s] already defined", e.variable))
 		}
 
 		result := l.eval(e.expr)

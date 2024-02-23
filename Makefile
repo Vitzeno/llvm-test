@@ -5,7 +5,7 @@ parser-gen:
 	@echo "Done."
 
 run:
-	@go run cmd/main.go
+	@go run main.go -in=asm/mock
 
 clang:
 	@clang asm/mock.ll -o asm/mock.out
