@@ -8,18 +8,46 @@ A custom scripting language with simple and familiar C-like syntax, mostly built
 let a = 5;
 let b = 5;
 
-a = 10;
-
-if (a + b < 12) {
+if (a + b  < 12) {
     print(a);
 } else {
     print(25);
 }
 
-while(a < 10) {
-    print(a);
-    a = a + 1;
+let c = 0;
+
+while (c < 10) {
+    c = a + b;
 }
+```
+
+### Corresponding AST
+
+```
+Assignment(a)
+        Number(5)
+Assignment(b)
+        Number(5)
+IfStatement
+        BinaryExpr(<)
+                BinaryExpr(+)
+                        Variable(a)
+                        Variable(b)
+                Number(12)
+        StdPrint
+                Variable(a)
+        StdPrint
+                Number(25)
+Assignment(c)
+        Number(0)
+WhileStatement
+        BinaryExpr(<)
+                Variable(c)
+                Number(10)
+        Reassignment(c)
+                BinaryExpr(+)
+                        Variable(a)
+                        Variable(b)
 ```
 
 ## Compiler Details
@@ -60,7 +88,7 @@ Below is the grammar definition that dictates what is and isn't valid syntax, al
 %left '(' ')'
 
 program :  /* empty */
-     | program statement { YYlex.(*Lexer).codeGen($2) } 
+     | program statement { YYlex.(*Lexer).codeGen($2) }
      ;
 
 statement:
@@ -78,41 +106,41 @@ statements:
      ;
 
 expression:
-     NUMBER 
-    | IDENTIFIER 
-    | expression '+' expression 
-    | expression '-' expression 
-    | expression '*' expression 
-    | expression '/' expression 
-    | expression LE expression 
-    | expression GE expression 
-    | expression EQ expression 
-    | expression NE expression 
-    | expression OR expression 
-    | expression AND expression 
-    | '(' expression ')'  
-    | '-' expression %prec UMINUS 
+     NUMBER
+    | IDENTIFIER
+    | expression '+' expression
+    | expression '-' expression
+    | expression '*' expression
+    | expression '/' expression
+    | expression LE expression
+    | expression GE expression
+    | expression EQ expression
+    | expression NE expression
+    | expression OR expression
+    | expression AND expression
+    | '(' expression ')'
+    | '-' expression %prec UMINUS
     ;
-    
+
 assignment:
-     LET IDENTIFIER ASSIGN expression 
+     LET IDENTIFIER ASSIGN expression
      ;
 
 reassignment:
-     IDENTIFIER ASSIGN expression 
+     IDENTIFIER ASSIGN expression
      ;
 
 print:
-     PRINT '(' expression ')' 
+     PRINT '(' expression ')'
      ;
 
 control_flow:
-     IF '(' expression ')' '{' statements '}'  %prec NO_ELSE 
-     | IF '(' expression ')' '{' statements '}' ELSE 
+     IF '(' expression ')' '{' statements '}'  %prec NO_ELSE
+     | IF '(' expression ')' '{' statements '}' ELSE
      ;
 
 while_statement:
-     WHILE '(' expression ')' '{' statements '}' 
+     WHILE '(' expression ')' '{' statements '}'
 ```
 
 ## Semantic analysis
@@ -122,4 +150,3 @@ Semantic is handled by a parser which populates an Abstract Syntax Tree (AST) to
 The parser itself is generated using a parser generator due to the large number of combinations and complexity involved in creating a handwritten parser.
 
 Once parsing is complete and a valid AST is generated, this can be recursively traversed whilst generating corresponding LLVM IR.
-
