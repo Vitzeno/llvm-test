@@ -134,6 +134,7 @@ func (l *Lexer) evalBinaryExpr(e *BinaryExpr) (float64, error) {
 		}
 
 		if rhs == 0 {
+			l.Error("division by zero")
 			return 0, fmt.Errorf("division by zero")
 		}
 		return lhs / rhs, nil
@@ -242,6 +243,7 @@ func (l *Lexer) evalParenExpr(e *ParenExpr) (float64, error) {
 func (l *Lexer) evalVariable(e *Variable) (float64, error) {
 	val, ok := l.variables[e.Name]
 	if !ok {
+		l.Error(fmt.Sprintf("undefined variable: %s", e.Name))
 		return 0, fmt.Errorf("undefined variable: %s", e.Name)
 	}
 	return val.value, nil
@@ -250,6 +252,7 @@ func (l *Lexer) evalVariable(e *Variable) (float64, error) {
 func (l *Lexer) evalNumber(e *Number) (float64, error) {
 	val, err := strconv.ParseFloat(e.Value, 64)
 	if err != nil {
+		l.Error(fmt.Sprintf("invalid number: %s", e.Value))
 		return 0, fmt.Errorf("invalid number: %s", e.Value)
 	}
 	return val, nil
@@ -258,7 +261,8 @@ func (l *Lexer) evalNumber(e *Number) (float64, error) {
 func (l *Lexer) evalAssignment(e *Assignment) (float64, error) {
 	_, ok := l.variables[e.Variable]
 	if ok {
-		return 0, fmt.Errorf("variable already defined: %s", e.Variable)
+		l.Error(fmt.Sprintf(`variable "%s" already defined`, e.Variable))
+		return 0, fmt.Errorf(`variable "%s" already defined`, e.Variable)
 	}
 
 	result, err := l.evalAst(e.Expr)
@@ -275,6 +279,7 @@ func (l *Lexer) evalAssignment(e *Assignment) (float64, error) {
 func (l *Lexer) evalReassignment(e *Reassignment) (float64, error) {
 	_, ok := l.variables[e.Variable]
 	if !ok {
+		l.Error(fmt.Sprintf("undefined variable: %s", e.Variable))
 		return 0, fmt.Errorf("undefined variable: %s", e.Variable)
 	}
 
@@ -321,7 +326,7 @@ func (l *Lexer) evalWhileStatement(e *WhileStatement) (float64, error) {
 		return 0, err
 	}
 
-	for result != 0 {
+	if result != 0 {
 		_, err := l.evalAst(e.Body)
 		if err != nil {
 			return 0, err

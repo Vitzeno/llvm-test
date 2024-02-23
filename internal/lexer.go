@@ -44,7 +44,7 @@ func NewLexer(reader io.Reader) *Lexer {
 
 // Error is the error handler for the lexer
 func (l *Lexer) Error(e string) {
-	l.errors = append(l.errors, fmt.Sprintf("Error: %s Line: %d, Col: %d", e, l.pos.line, l.pos.col))
+	l.errors = append(l.errors, fmt.Sprintf("%s Line: %d, Col: %d", e, l.pos.line, l.pos.col))
 	l.evalFailed = true
 }
 

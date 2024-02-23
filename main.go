@@ -30,10 +30,11 @@ func main() {
 	errCount := internal.YYParse(lexer)
 	if errCount != 0 {
 		fmt.Println("parsing failed found error(s) in source file")
-		for _, lexErr := range lexer.Errors() {
-			fmt.Println(lexErr)
-		}
 		os.Exit(1)
+	}
+
+	for _, lexErr := range lexer.Errors() {
+		fmt.Println(lexErr)
 	}
 
 	_, err = os.Create(fmt.Sprintf("%s/%s.ll", path.Dir(*sourceFile), path.Base(*sourceFile)))
