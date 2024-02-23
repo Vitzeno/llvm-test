@@ -50,6 +50,20 @@ WhileStatement
                         Variable(b)
 ```
 
+### Error Reporting Example
+
+```
+variable "b" already defined Line: 3, Col: 10
+```
+
+```
+division by zero Line: 5, Col: 6
+```
+
+```
+undefined variable: d Line: 7, Col: 6
+```
+
 ## Compiler Details
 
 The compiler uses LLVM as its backend allowing it to quickly target a wide range of architectures and make use of existing optimisation passes. A compiler typically consists of six stages illustrated below, LLVM handles the intermediate code generation, optimization and final code generation for us. This frees up developers to focus on the frontend rather than getting bogged down on the mituate such as register allocation.
