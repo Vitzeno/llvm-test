@@ -44,7 +44,7 @@ func (suite *TestSuite) TestParser() {
 		},
 	} {
 		suite.T().Run(tc.name, func(t *testing.T) {
-			InitCodeGen()
+			//InitCodeGen()
 			file, err := os.Open(tc.inputPath)
 			if err != nil {
 				panic(err)

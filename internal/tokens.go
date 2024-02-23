@@ -13,8 +13,10 @@ const (
 	tokenIf         = IF         // if keyword
 	tokenThen       = THEN       // then keyword
 	tokenElse       = ELSE       // else keyword
-	tokenLe         = LE         // <
-	tokenGe         = GE         // >
+	tokenGt         = GT         // >
+	tokenLt         = LT         // <
+	tokenLte        = LTE        // <=
+	tokenGte        = GTE        // >=
 	tokenEq         = EQ         // ==
 	tokenNe         = NE         // !=
 	tokenOr         = OR         // ||

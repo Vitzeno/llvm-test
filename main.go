@@ -19,7 +19,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	internal.InitCodeGen()
+	//internal.InitCodeGen()
 	internal.YYDebug = 0
 	file, err := os.Open(*sourceFile)
 	if err != nil {
@@ -30,19 +30,20 @@ func main() {
 	errCount := internal.YYParse(lexer)
 	if errCount != 0 {
 		fmt.Println("parsing failed found error(s) in source file")
-		for _, lexErr := range lexer.Errors() {
-			fmt.Println(lexErr)
-		}
 		os.Exit(1)
 	}
 
-	outputFile, err := os.Create(fmt.Sprintf("%s/%s.ll", path.Dir(*sourceFile), path.Base(*sourceFile)))
+	for _, lexErr := range lexer.Errors() {
+		fmt.Println(lexErr)
+	}
+
+	_, err = os.Create(fmt.Sprintf("%s/%s.ll", path.Dir(*sourceFile), path.Base(*sourceFile)))
 	if err != nil {
 		panic(err)
 	}
 
-	internal.PrintCode()
-	internal.WriteToFile(outputFile)
+	//internal.PrintCode()
+	//internal.WriteToFile(outputFile)
 }
 
 func isFlagPassed(name string) bool {
