@@ -58,6 +58,7 @@ func (l *Lexer) codeGen(a ast) value.Value {
 		case "*":
 			return block.NewFMul(lhs, rhs)
 		case "/":
+			// this causes a block missing terminator error, might be better to handle this separately outside of the switch
 			if l.eval(e.rhs) == 0 {
 				l.Error("Division by zero")
 				return nil

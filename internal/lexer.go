@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"unicode"
@@ -28,7 +29,7 @@ type Lexer struct {
 	parseResult ast
 	reader      *bufio.Reader
 	errors      []string
-	//buffer      bytes.Buffer // Buffer to store tokens temporarily
+	buffer      bytes.Buffer // Buffer to store tokens temporarily
 }
 
 // NewLexer creates a new lexer
@@ -54,14 +55,12 @@ func (l *Lexer) Errors() []string {
 
 // Lex is the main lexer function
 func (l *Lexer) Lex(lval *YYSymType) int {
-	//spew.Dump(l.variables)
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
 				return EOF
 			}
-
 			l.Error(fmt.Sprintf("unexpected error: %s", err))
 		}
 
@@ -80,7 +79,6 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 				l.backup()
 				digit := l.lexInt()
 				lval.String = digit
-				//fmt.Printf("digit: %v\n", digit)
 				return tokenNumber
 			} else if unicode.IsLetter(r) {
 				// backup and let lexIdentifier rescan the beginning of the identifier
@@ -149,66 +147,72 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 
 // lexInt scans the input for an integer
 func (l *Lexer) lexInt() string {
-	var lit string
+	l.buffer.Reset()
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
-				return lit
+				return l.buffer.String()
 			}
+			l.Error(fmt.Sprintf("unexpected error: %s", err))
+			return l.buffer.String()
 		}
 
 		l.pos.col++
 		if unicode.IsDigit(r) {
-			lit += string(r)
+			l.buffer.WriteRune(r)
 		} else {
 			// over-scanned int, need to move back
 			l.backup()
-			return lit
+			return l.buffer.String()
 		}
 	}
 }
 
 // lexSymbol scans the input for a symbol
 func (l *Lexer) lexSymbol() string {
-	var lit string
+	l.buffer.Reset()
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
-				return lit
+				return l.buffer.String()
 			}
+			l.Error(fmt.Sprintf("unexpected error: %s", err))
+			return l.buffer.String()
 		}
 
 		l.pos.col++
 		if unicode.IsSymbol(r) {
-			lit += string(r)
+			l.buffer.WriteRune(r)
 		} else {
-			// over=scanned identifier, need to move back
+			// over-scanned identifier, need to move back
 			l.backup()
-			return lit
+			return l.buffer.String()
 		}
 	}
 }
 
 // lexIdentifier scans the input for an identifier
 func (l *Lexer) lexIdentifier() string {
-	var lit string
+	l.buffer.Reset()
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
-				return lit
+				return l.buffer.String()
 			}
+			l.Error(fmt.Sprintf("unexpected error: %s", err))
+			return l.buffer.String()
 		}
 
 		l.pos.col++
 		if unicode.IsLetter(r) {
-			lit += string(r)
+			l.buffer.WriteRune(r)
 		} else {
-			// over=scanned identifier, need to move back
+			// over-scanned identifier, need to move back
 			l.backup()
-			return lit
+			return l.buffer.String()
 		}
 	}
 }
