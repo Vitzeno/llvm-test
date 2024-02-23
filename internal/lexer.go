@@ -23,7 +23,7 @@ type varible struct {
 
 // Lexer is the lexer struct
 type Lexer struct {
-	rootAst    ast
+	rootAst    Ast
 	pos        Position
 	variables  map[string]varible
 	evalFailed bool

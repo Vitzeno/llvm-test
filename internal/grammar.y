@@ -5,7 +5,7 @@ package internal
 
 %union{
 String string
-Ast ast 
+Ast Ast 
 }
 
 %token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LT LTE GT GTE EQ NE OR AND ELSE WHILE PRINT
@@ -25,7 +25,7 @@ Ast ast
 
 %%
 program :  /* empty */
-     | program statement { YYlex.(*Lexer).eval($2) } // replace this with a call to codegen for code generation
+     | program statement { YYlex.(*Lexer).evalAst($2); PrintAST($2, 0)} // replace this with a call to codegen for code generation
      ;
 
 statement:
@@ -43,42 +43,42 @@ statements:
      ;
 
 expression:
-     NUMBER { $$ = &number{$1} }
-    | IDENTIFIER { $$ = &variable{$1} }
-    | expression '+' expression { $$ = &binaryExpr{Op: "+", lhs: $1, rhs: $3} }
-    | expression '-' expression { $$ = &binaryExpr{Op: "-", lhs: $1, rhs: $3} }
-    | expression '*' expression { $$ = &binaryExpr{Op: "*", lhs: $1, rhs: $3} }
-    | expression '/' expression { $$ = &binaryExpr{Op: "/", lhs: $1, rhs: $3} }
-    | expression LT expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression GT expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression LTE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression GTE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression EQ expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression NE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression OR expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression AND expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | '(' expression ')'  { $$ = &parenExpr{$2} }
-    | '-' expression %prec UMINUS { $$ = &unaryExpr{$2} }
+     NUMBER { $$ = &Number{$1} }
+    | IDENTIFIER { $$ = &Variable{$1} }
+    | expression '+' expression { $$ = &BinaryExpr{Op: "+", Lhs: $1, Rhs: $3} }
+    | expression '-' expression { $$ = &BinaryExpr{Op: "-", Lhs: $1, Rhs: $3} }
+    | expression '*' expression { $$ = &BinaryExpr{Op: "*", Lhs: $1, Rhs: $3} }
+    | expression '/' expression { $$ = &BinaryExpr{Op: "/", Lhs: $1, Rhs: $3} }
+    | expression LT expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | expression GT expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | expression LTE expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | expression GTE expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | expression EQ expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | expression NE expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | expression OR expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | expression AND expression { $$ = &BinaryExpr{Op: $2, Lhs: $1, Rhs: $3} }
+    | '(' expression ')'  { $$ = &ParenExpr{$2} }
+    | '-' expression %prec UMINUS { $$ = &UnaryExpr{$2} }
     ;
     
 assignment:
-     LET IDENTIFIER ASSIGN expression { $$ = &assignment{variable: $2, expr: $4} }
+     LET IDENTIFIER ASSIGN expression { $$ = &Assignment{Variable: $2, Expr: $4} }
      ;
 
 reassignment:
-     IDENTIFIER ASSIGN expression { $$ = &reassignment{variable: $1, expr: $3} }
+     IDENTIFIER ASSIGN expression { $$ = &Reassignment{Variable: $1, Expr: $3} }
      ;
 
 print:
-     PRINT '(' expression ')' { $$ = &stdPrint{expr: $3} }
+     PRINT '(' expression ')' { $$ = &StdPrint{Expr: $3} }
      ;
 
 control_flow:
-     IF '(' expression ')' '{' statements '}'  %prec NO_ELSE { $$ = &ifStatement{cond: $3, thenStmt: $6, elseStmt: nil} }
-     | IF '(' expression ')' '{' statements '}' ELSE '{' statements '}' { $$ = &ifStatement{cond: $3, thenStmt: $6, elseStmt: $10} }
+     IF '(' expression ')' '{' statements '}'  %prec NO_ELSE { $$ = &IfStatement{Cond: $3, ThenStmt: $6, ElseStmt: nil} }
+     | IF '(' expression ')' '{' statements '}' ELSE '{' statements '}' { $$ = &IfStatement{Cond: $3, ThenStmt: $6, ElseStmt: $10} }
      ;
 
 while_statement:
-     WHILE '(' expression ')' '{' statements '}' { $$ = &whileStatement{cond: $3, body: $6} }
+     WHILE '(' expression ')' '{' statements '}' { $$ = &WhileStatement{Cond: $3, Body: $6} }
 
 %%

@@ -12,7 +12,7 @@ import __yyfmt__ "fmt"
 type YYSymType struct {
 	yys    int
 	String string
-	Ast    ast
+	Ast    Ast
 }
 
 const NUMBER = 57346
@@ -528,139 +528,140 @@ YYdefault:
 		YYDollar = YYS[YYpt-2 : YYpt+1]
 //line internal/grammar.y:28
 		{
-			YYlex.(*Lexer).eval(YYDollar[2].Ast)
+			YYlex.(*Lexer).evalAst(YYDollar[2].Ast)
+			PrintAST(YYDollar[2].Ast, 0)
 		}
 	case 11:
 		YYDollar = YYS[YYpt-1 : YYpt+1]
 //line internal/grammar.y:46
 		{
-			YYVAL.Ast = &number{YYDollar[1].String}
+			YYVAL.Ast = &Number{YYDollar[1].String}
 		}
 	case 12:
 		YYDollar = YYS[YYpt-1 : YYpt+1]
 //line internal/grammar.y:47
 		{
-			YYVAL.Ast = &variable{YYDollar[1].String}
+			YYVAL.Ast = &Variable{YYDollar[1].String}
 		}
 	case 13:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:48
 		{
-			YYVAL.Ast = &binaryExpr{Op: "+", lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: "+", Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 14:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:49
 		{
-			YYVAL.Ast = &binaryExpr{Op: "-", lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: "-", Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 15:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:50
 		{
-			YYVAL.Ast = &binaryExpr{Op: "*", lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: "*", Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 16:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:51
 		{
-			YYVAL.Ast = &binaryExpr{Op: "/", lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: "/", Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 17:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:52
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 18:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:53
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 19:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:54
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 20:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:55
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 21:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:56
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 22:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:57
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 23:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:58
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 24:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:59
 		{
-			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+			YYVAL.Ast = &BinaryExpr{Op: YYDollar[2].String, Lhs: YYDollar[1].Ast, Rhs: YYDollar[3].Ast}
 		}
 	case 25:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:60
 		{
-			YYVAL.Ast = &parenExpr{YYDollar[2].Ast}
+			YYVAL.Ast = &ParenExpr{YYDollar[2].Ast}
 		}
 	case 26:
 		YYDollar = YYS[YYpt-2 : YYpt+1]
 //line internal/grammar.y:61
 		{
-			YYVAL.Ast = &unaryExpr{YYDollar[2].Ast}
+			YYVAL.Ast = &UnaryExpr{YYDollar[2].Ast}
 		}
 	case 27:
 		YYDollar = YYS[YYpt-4 : YYpt+1]
 //line internal/grammar.y:65
 		{
-			YYVAL.Ast = &assignment{variable: YYDollar[2].String, expr: YYDollar[4].Ast}
+			YYVAL.Ast = &Assignment{Variable: YYDollar[2].String, Expr: YYDollar[4].Ast}
 		}
 	case 28:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:69
 		{
-			YYVAL.Ast = &reassignment{variable: YYDollar[1].String, expr: YYDollar[3].Ast}
+			YYVAL.Ast = &Reassignment{Variable: YYDollar[1].String, Expr: YYDollar[3].Ast}
 		}
 	case 29:
 		YYDollar = YYS[YYpt-4 : YYpt+1]
 //line internal/grammar.y:73
 		{
-			YYVAL.Ast = &stdPrint{expr: YYDollar[3].Ast}
+			YYVAL.Ast = &StdPrint{Expr: YYDollar[3].Ast}
 		}
 	case 30:
 		YYDollar = YYS[YYpt-7 : YYpt+1]
 //line internal/grammar.y:77
 		{
-			YYVAL.Ast = &ifStatement{cond: YYDollar[3].Ast, thenStmt: YYDollar[6].Ast, elseStmt: nil}
+			YYVAL.Ast = &IfStatement{Cond: YYDollar[3].Ast, ThenStmt: YYDollar[6].Ast, ElseStmt: nil}
 		}
 	case 31:
 		YYDollar = YYS[YYpt-11 : YYpt+1]
 //line internal/grammar.y:78
 		{
-			YYVAL.Ast = &ifStatement{cond: YYDollar[3].Ast, thenStmt: YYDollar[6].Ast, elseStmt: YYDollar[10].Ast}
+			YYVAL.Ast = &IfStatement{Cond: YYDollar[3].Ast, ThenStmt: YYDollar[6].Ast, ElseStmt: YYDollar[10].Ast}
 		}
 	case 32:
 		YYDollar = YYS[YYpt-7 : YYpt+1]
 //line internal/grammar.y:82
 		{
-			YYVAL.Ast = &whileStatement{cond: YYDollar[3].Ast, body: YYDollar[6].Ast}
+			YYVAL.Ast = &WhileStatement{Cond: YYDollar[3].Ast, Body: YYDollar[6].Ast}
 		}
 	}
 	goto YYstack /* stack new state and value */
