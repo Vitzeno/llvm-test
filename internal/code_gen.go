@@ -77,7 +77,7 @@ func (l *Lexer) codeGen(a ast) value.Value {
 		case "AND":
 			return block.NewAnd(lhs, rhs)
 		default:
-			panic("unknown operator")
+			panic(fmt.Sprintf("code gen: unknown operator: %s", e.Op))
 		}
 
 	case *unaryExpr:

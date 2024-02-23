@@ -59,7 +59,6 @@ type whileStatement struct {
 }
 
 func (l *Lexer) eval(a ast) float64 {
-	//spew.Dump(e)
 	switch e := a.(type) {
 	case *binaryExpr:
 		switch e.Op {
@@ -106,7 +105,7 @@ func (l *Lexer) eval(a ast) float64 {
 			}
 			return 0
 		default:
-			panic("unknown operator")
+			panic(fmt.Sprintf("ast: unknown operator: %s", e.Op))
 		}
 
 	case *unaryExpr:

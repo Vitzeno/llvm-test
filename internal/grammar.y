@@ -8,14 +8,14 @@ String string
 Ast ast 
 }
 
-%token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LE GE EQ NE OR AND ELSE WHILE PRINT
+%token<String> NUMBER IDENTIFIER SEPARATOR ASSIGN LET IF THEN LT LTE GT GTE EQ NE OR AND ELSE WHILE PRINT
 
 %type <Ast> statements statement expression assignment reassignment print control_flow while_statement
 
 %nonassoc NO_ELSE
 %nonassoc ELSE
 %right ASSIGN
-%left LE GE EQ NE OR AND
+%left LT GT LTE GTE EQ NE OR AND
 %left '+' '-'
 %left '*' '/'
 %right UMINUS
@@ -25,7 +25,7 @@ Ast ast
 
 %%
 program :  /* empty */
-     | program statement { YYlex.(*Lexer).codeGen($2) } 
+     | program statement { YYlex.(*Lexer).eval($2) } // replace this with a call to codegen for code generation
      ;
 
 statement:
@@ -49,8 +49,10 @@ expression:
     | expression '-' expression { $$ = &binaryExpr{Op: "-", lhs: $1, rhs: $3} }
     | expression '*' expression { $$ = &binaryExpr{Op: "*", lhs: $1, rhs: $3} }
     | expression '/' expression { $$ = &binaryExpr{Op: "/", lhs: $1, rhs: $3} }
-    | expression LE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
-    | expression GE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
+    | expression LT expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
+    | expression GT expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
+    | expression LTE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
+    | expression GTE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
     | expression EQ expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
     | expression NE expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }
     | expression OR expression { $$ = &binaryExpr{Op: $2, lhs: $1, rhs: $3} }

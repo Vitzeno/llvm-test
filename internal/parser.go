@@ -22,17 +22,19 @@ const ASSIGN = 57349
 const LET = 57350
 const IF = 57351
 const THEN = 57352
-const LE = 57353
-const GE = 57354
-const EQ = 57355
-const NE = 57356
-const OR = 57357
-const AND = 57358
-const ELSE = 57359
-const WHILE = 57360
-const PRINT = 57361
-const NO_ELSE = 57362
-const UMINUS = 57363
+const LT = 57353
+const LTE = 57354
+const GT = 57355
+const GTE = 57356
+const EQ = 57357
+const NE = 57358
+const OR = 57359
+const AND = 57360
+const ELSE = 57361
+const WHILE = 57362
+const PRINT = 57363
+const NO_ELSE = 57364
+const UMINUS = 57365
 
 var YYToknames = [...]string{
 	"$end",
@@ -45,8 +47,10 @@ var YYToknames = [...]string{
 	"LET",
 	"IF",
 	"THEN",
-	"LE",
-	"GE",
+	"LT",
+	"LTE",
+	"GT",
+	"GTE",
 	"EQ",
 	"NE",
 	"OR",
@@ -72,7 +76,7 @@ const YYEofCode = 1
 const YYErrCode = 2
 const YYInitialStackSize = 16
 
-//line internal/grammar.y:82
+//line internal/grammar.y:84
 
 //line yacctab:1
 var YYExca = [...]int{
@@ -83,76 +87,78 @@ var YYExca = [...]int{
 
 const YYPrivate = 57344
 
-const YYLast = 160
+const YYLast = 174
 
 var YYAct = [...]int{
-	61, 3, 70, 66, 64, 22, 23, 24, 25, 26,
-	27, 68, 60, 32, 34, 18, 19, 20, 21, 59,
-	39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
-	38, 37, 36, 49, 18, 19, 20, 21, 52, 53,
-	54, 20, 21, 67, 22, 23, 24, 25, 26, 27,
-	51, 31, 30, 55, 18, 19, 20, 21, 29, 28,
-	58, 63, 35, 65, 62, 1, 2, 8, 7, 69,
-	22, 23, 24, 25, 26, 27, 6, 5, 4, 0,
-	18, 19, 20, 21, 0, 0, 57, 22, 23, 24,
-	25, 26, 27, 0, 0, 0, 0, 18, 19, 20,
-	21, 0, 0, 56, 22, 23, 24, 25, 26, 27,
+	65, 3, 74, 22, 24, 23, 25, 26, 27, 28,
+	29, 70, 68, 34, 36, 18, 19, 20, 21, 72,
+	41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+	51, 52, 64, 63, 40, 53, 18, 19, 20, 21,
+	56, 57, 58, 39, 38, 71, 22, 24, 23, 25,
+	26, 27, 28, 29, 20, 21, 55, 59, 18, 19,
+	20, 21, 33, 32, 62, 67, 31, 69, 30, 37,
+	66, 1, 2, 73, 22, 24, 23, 25, 26, 27,
+	28, 29, 8, 7, 6, 5, 18, 19, 20, 21,
+	4, 0, 61, 22, 24, 23, 25, 26, 27, 28,
+	29, 0, 0, 0, 0, 18, 19, 20, 21, 0,
+	0, 60, 22, 24, 23, 25, 26, 27, 28, 29,
 	0, 0, 0, 0, 18, 19, 20, 21, 17, 0,
-	50, 9, 33, 22, 23, 24, 25, 26, 27, 0,
-	0, 0, 0, 18, 19, 20, 21, 9, 10, 12,
-	0, 13, 15, 11, 0, 0, 0, 0, 0, 0,
-	0, 16, 14, 0, 0, 12, 0, 0, 0, 11,
+	54, 9, 35, 22, 24, 23, 25, 26, 27, 28,
+	29, 0, 0, 0, 0, 18, 19, 20, 21, 9,
+	10, 12, 0, 13, 15, 11, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 16, 14, 0, 0, 12,
+	0, 0, 0, 11,
 }
 
 var YYPact = [...]int{
-	-1000, 133, -1000, 112, 53, 52, 46, -1000, -1000, -1000,
-	44, 117, 117, 57, 6, 5, 4, -1000, 117, 117,
-	117, 117, 117, 117, 117, 117, 117, 117, -1000, -1000,
-	-1000, 117, 93, -1000, -1000, 43, 117, 117, 117, 18,
-	18, -1000, -1000, 13, 13, 13, 13, 13, 13, -6,
-	-1000, 117, 76, 59, 33, -6, -1000, -9, -16, 133,
-	133, -25, 133, -26, 26, -1000, -1000, -17, 133, -27,
-	-1000,
+	-1000, 145, -1000, 122, 62, 60, 57, -1000, -1000, -1000,
+	55, 127, 127, 64, 16, 15, 6, -1000, 127, 127,
+	127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
+	-1000, -1000, -1000, 127, 101, -1000, -1000, 49, 127, 127,
+	127, 29, 29, -1000, -1000, 13, 13, 13, 13, 13,
+	13, 13, 13, -8, -1000, 127, 82, 63, 35, -8,
+	-1000, 3, 2, 145, 145, -19, 145, -20, 26, -1000,
+	-1000, -11, 145, -29, -1000,
 }
 
 var YYPgo = [...]int{
-	0, 0, 64, 1, 78, 77, 76, 68, 67, 65,
+	0, 0, 70, 1, 90, 85, 84, 83, 82, 71,
 }
 
 var YYR1 = [...]int{
 	0, 9, 9, 2, 2, 2, 2, 2, 2, 1,
 	1, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 4, 5, 6, 7, 7,
-	8,
+	3, 3, 3, 3, 3, 3, 3, 4, 5, 6,
+	7, 7, 8,
 }
 
 var YYR2 = [...]int{
 	0, 0, 2, 2, 2, 2, 2, 1, 1, 2,
 	1, 1, 1, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 2, 4, 3, 4, 7, 11,
-	7,
+	3, 3, 3, 3, 3, 3, 2, 4, 3, 4,
+	7, 11, 7,
 }
 
 var YYChk = [...]int{
 	-1000, -9, -2, -3, -4, -5, -6, -7, -8, 4,
-	5, 26, 22, 8, 19, 9, 18, 6, 21, 22,
-	23, 24, 11, 12, 13, 14, 15, 16, 6, 6,
-	6, 7, -3, 5, -3, 5, 26, 26, 26, -3,
-	-3, -3, -3, -3, -3, -3, -3, -3, -3, -3,
-	27, 7, -3, -3, -3, -3, 27, 27, 27, 28,
-	28, -1, -2, -1, 29, -1, 29, 17, 28, -1,
-	29,
+	5, 28, 24, 8, 21, 9, 20, 6, 23, 24,
+	25, 26, 11, 13, 12, 14, 15, 16, 17, 18,
+	6, 6, 6, 7, -3, 5, -3, 5, 28, 28,
+	28, -3, -3, -3, -3, -3, -3, -3, -3, -3,
+	-3, -3, -3, -3, 29, 7, -3, -3, -3, -3,
+	29, 29, 29, 30, 30, -1, -2, -1, 31, -1,
+	31, 19, 30, -1, 31,
 }
 
 var YYDef = [...]int{
 	1, -2, 2, 0, 0, 0, 0, 7, 8, 11,
 	12, 0, 0, 0, 0, 0, 0, 3, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 4, 5,
-	6, 0, 0, 12, 24, 0, 0, 0, 0, 13,
-	14, 15, 16, 17, 18, 19, 20, 21, 22, 26,
-	23, 0, 0, 0, 0, 25, 27, 0, 0, 0,
-	0, 0, 10, 0, 28, 9, 30, 0, 0, 0,
-	29,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	4, 5, 6, 0, 0, 12, 26, 0, 0, 0,
+	0, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+	22, 23, 24, 28, 25, 0, 0, 0, 0, 27,
+	29, 0, 0, 0, 0, 0, 10, 0, 30, 9,
+	32, 0, 0, 0, 31,
 }
 
 var YYTok1 = [...]int{
@@ -160,7 +166,7 @@ var YYTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	26, 27, 23, 21, 3, 22, 3, 24, 3, 3,
+	28, 29, 25, 23, 3, 24, 3, 26, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -168,12 +174,13 @@ var YYTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 28, 3, 29,
+	3, 3, 3, 30, 3, 31,
 }
 
 var YYTok2 = [...]int{
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-	12, 13, 14, 15, 16, 17, 18, 19, 20, 25,
+	12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+	22, 27,
 }
 
 var YYTok3 = [...]int{
@@ -521,7 +528,7 @@ YYdefault:
 		YYDollar = YYS[YYpt-2 : YYpt+1]
 //line internal/grammar.y:28
 		{
-			YYlex.(*Lexer).codeGen(YYDollar[2].Ast)
+			YYlex.(*Lexer).eval(YYDollar[2].Ast)
 		}
 	case 11:
 		YYDollar = YYS[YYpt-1 : YYpt+1]
@@ -599,47 +606,59 @@ YYdefault:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:58
 		{
-			YYVAL.Ast = &parenExpr{YYDollar[2].Ast}
+			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
 		}
 	case 24:
-		YYDollar = YYS[YYpt-2 : YYpt+1]
+		YYDollar = YYS[YYpt-3 : YYpt+1]
 //line internal/grammar.y:59
+		{
+			YYVAL.Ast = &binaryExpr{Op: YYDollar[2].String, lhs: YYDollar[1].Ast, rhs: YYDollar[3].Ast}
+		}
+	case 25:
+		YYDollar = YYS[YYpt-3 : YYpt+1]
+//line internal/grammar.y:60
+		{
+			YYVAL.Ast = &parenExpr{YYDollar[2].Ast}
+		}
+	case 26:
+		YYDollar = YYS[YYpt-2 : YYpt+1]
+//line internal/grammar.y:61
 		{
 			YYVAL.Ast = &unaryExpr{YYDollar[2].Ast}
 		}
-	case 25:
+	case 27:
 		YYDollar = YYS[YYpt-4 : YYpt+1]
-//line internal/grammar.y:63
+//line internal/grammar.y:65
 		{
 			YYVAL.Ast = &assignment{variable: YYDollar[2].String, expr: YYDollar[4].Ast}
 		}
-	case 26:
+	case 28:
 		YYDollar = YYS[YYpt-3 : YYpt+1]
-//line internal/grammar.y:67
+//line internal/grammar.y:69
 		{
 			YYVAL.Ast = &reassignment{variable: YYDollar[1].String, expr: YYDollar[3].Ast}
 		}
-	case 27:
+	case 29:
 		YYDollar = YYS[YYpt-4 : YYpt+1]
-//line internal/grammar.y:71
+//line internal/grammar.y:73
 		{
 			YYVAL.Ast = &stdPrint{expr: YYDollar[3].Ast}
 		}
-	case 28:
+	case 30:
 		YYDollar = YYS[YYpt-7 : YYpt+1]
-//line internal/grammar.y:75
+//line internal/grammar.y:77
 		{
 			YYVAL.Ast = &ifStatement{cond: YYDollar[3].Ast, thenStmt: YYDollar[6].Ast, elseStmt: nil}
 		}
-	case 29:
+	case 31:
 		YYDollar = YYS[YYpt-11 : YYpt+1]
-//line internal/grammar.y:76
+//line internal/grammar.y:78
 		{
 			YYVAL.Ast = &ifStatement{cond: YYDollar[3].Ast, thenStmt: YYDollar[6].Ast, elseStmt: YYDollar[10].Ast}
 		}
-	case 30:
+	case 32:
 		YYDollar = YYS[YYpt-7 : YYpt+1]
-//line internal/grammar.y:80
+//line internal/grammar.y:82
 		{
 			YYVAL.Ast = &whileStatement{cond: YYDollar[3].Ast, body: YYDollar[6].Ast}
 		}

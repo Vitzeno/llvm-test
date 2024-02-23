@@ -36,13 +36,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	outputFile, err := os.Create(fmt.Sprintf("%s/%s.ll", path.Dir(*sourceFile), path.Base(*sourceFile)))
+	_, err = os.Create(fmt.Sprintf("%s/%s.ll", path.Dir(*sourceFile), path.Base(*sourceFile)))
 	if err != nil {
 		panic(err)
 	}
 
-	internal.PrintCode()
-	internal.WriteToFile(outputFile)
+	//internal.PrintCode()
+	//internal.WriteToFile(outputFile)
 }
 
 func isFlagPassed(name string) bool {
