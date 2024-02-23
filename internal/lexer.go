@@ -23,22 +23,22 @@ type varible struct {
 
 // Lexer is the lexer struct
 type Lexer struct {
-	pos         Position
-	variables   map[string]varible
-	evalFailed  bool
-	parseResult ast
-	reader      *bufio.Reader
-	errors      []string
-	buffer      bytes.Buffer // Buffer to store tokens temporarily
+	rootAst    ast
+	pos        Position
+	variables  map[string]varible
+	evalFailed bool
+	reader     *bufio.Reader
+	errors     []string
+	buffer     bytes.Buffer // Buffer to store tokens temporarily
 }
 
 // NewLexer creates a new lexer
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
-		pos:         Position{line: 1, col: 0},
-		variables:   make(map[string]varible),
-		parseResult: &astRoot{},
-		reader:      bufio.NewReader(reader),
+		pos:       Position{line: 1, col: 0},
+		variables: make(map[string]varible),
+		rootAst:   nil,
+		reader:    bufio.NewReader(reader),
 	}
 }
 

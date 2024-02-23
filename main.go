@@ -19,7 +19,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	internal.InitCodeGen()
+	//internal.InitCodeGen()
 	internal.YYDebug = 0
 	file, err := os.Open(*sourceFile)
 	if err != nil {
