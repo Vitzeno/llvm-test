@@ -34,8 +34,10 @@ IfStatement
                         Variable(a)
                         Variable(b)
                 Number(12)
+Then
         StdPrint
                 Variable(a)
+Else
         StdPrint
                 Number(25)
 Assignment(c)
