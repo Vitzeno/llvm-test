@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path"
 
 	"github.com/vitzeno/llvm-test/internal"
 )
@@ -37,10 +36,10 @@ func main() {
 		fmt.Println(lexErr)
 	}
 
-	_, err = os.Create(fmt.Sprintf("%s/%s.ll", path.Dir(*sourceFile), path.Base(*sourceFile)))
-	if err != nil {
-		panic(err)
-	}
+	// _, err = os.Create(fmt.Sprintf("%s/%s.ll", path.Dir(*sourceFile), path.Base(*sourceFile)))
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	//internal.PrintCode()
 	//internal.WriteToFile(outputFile)

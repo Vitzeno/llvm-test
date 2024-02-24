@@ -367,8 +367,10 @@ func PrintAST(a Ast, indentLevel int) {
 	case *IfStatement:
 		fmt.Printf("%sIfStatement\n", strings.Repeat("\t", indentLevel))
 		PrintAST(e.Cond, indentLevel+1)
+		fmt.Printf("%sThen\n", strings.Repeat("\t", indentLevel))
 		PrintAST(e.ThenStmt, indentLevel+1)
 		if e.ElseStmt != nil {
+			fmt.Printf("%sElse\n", strings.Repeat("\t", indentLevel))
 			PrintAST(e.ElseStmt, indentLevel+1)
 		}
 	case *WhileStatement:
