@@ -19,5 +19,5 @@ const (
 )
 
 func (d *Diagnostic) String() string {
-	return fmt.Sprintf("%d Line: %d, Col: %d, %s", d.Severity, d.line, d.col, d.Message)
+	return fmt.Sprintf("%d Line: %d, Col: %d, %s", d.Severity, d.Line, d.Col, d.Message)
 }

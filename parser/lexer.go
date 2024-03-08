@@ -12,8 +12,8 @@ import (
 
 // Position tracks the position of the lexer
 type Position struct {
-	line int
-	col  int
+	Line int
+	Col  int
 }
 
 type varible struct {
@@ -35,7 +35,7 @@ type Lexer struct {
 // NewLexer creates a new lexer
 func NewLexer(reader io.Reader) *Lexer {
 	return &Lexer{
-		pos:       Position{line: 1, col: 0},
+		pos:       Position{Line: 1, Col: 0},
 		variables: make(map[string]varible),
 		rootAst:   nil,
 		reader:    bufio.NewReader(reader),
@@ -46,7 +46,7 @@ func NewLexer(reader io.Reader) *Lexer {
 func (l *Lexer) Error(e string) {
 	//l.errors = append(l.errors, fmt.Sprintf("%s Line: %d, Col: %d", e, l.pos.line, l.pos.col))
 	l.errors = append(l.errors, Diagnostic{
-		Position: Position{line: l.pos.line, col: l.pos.col},
+		Position: Position{Line: l.pos.Line, Col: l.pos.Col},
 		Message:  e,
 		Severity: Error,
 	})
@@ -69,7 +69,7 @@ func (l *Lexer) Lex(lval *YYSymType) int {
 			l.Error(fmt.Sprintf("unexpected error: %s", err))
 		}
 
-		l.pos.col++
+		l.pos.Col++
 
 		switch r {
 		case '\n':
@@ -181,7 +181,7 @@ func (l *Lexer) lexInt() string {
 			return l.buffer.String()
 		}
 
-		l.pos.col++
+		l.pos.Col++
 		if unicode.IsDigit(r) {
 			l.buffer.WriteRune(r)
 		} else {
@@ -205,7 +205,7 @@ func (l *Lexer) lexSymbol() string {
 			return l.buffer.String()
 		}
 
-		l.pos.col++
+		l.pos.Col++
 		if unicode.IsSymbol(r) {
 			l.buffer.WriteRune(r)
 		} else {
@@ -229,7 +229,7 @@ func (l *Lexer) lexIdentifier() string {
 			return l.buffer.String()
 		}
 
-		l.pos.col++
+		l.pos.Col++
 		if unicode.IsLetter(r) {
 			l.buffer.WriteRune(r)
 		} else {
@@ -242,8 +242,8 @@ func (l *Lexer) lexIdentifier() string {
 
 // resetPosition resets the column and increments the line
 func (l *Lexer) resetPosition() {
-	l.pos.line++
-	l.pos.col = 0
+	l.pos.Line++
+	l.pos.Col = 0
 }
 
 // backup moves the reader back one rune
@@ -252,5 +252,5 @@ func (l *Lexer) backup() {
 		panic(err)
 	}
 
-	l.pos.col--
+	l.pos.Col--
 }
