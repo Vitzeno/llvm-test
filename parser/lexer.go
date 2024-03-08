@@ -28,7 +28,7 @@ type Lexer struct {
 	variables  map[string]varible
 	evalFailed bool
 	reader     *bufio.Reader
-	errors     []string
+	errors     []Diagnostic
 	buffer     bytes.Buffer // Buffer to store tokens temporarily
 }
 
@@ -44,12 +44,17 @@ func NewLexer(reader io.Reader) *Lexer {
 
 // Error is the error handler for the lexer
 func (l *Lexer) Error(e string) {
-	l.errors = append(l.errors, fmt.Sprintf("%s Line: %d, Col: %d", e, l.pos.line, l.pos.col))
+	//l.errors = append(l.errors, fmt.Sprintf("%s Line: %d, Col: %d", e, l.pos.line, l.pos.col))
+	l.errors = append(l.errors, Diagnostic{
+		Position: Position{line: l.pos.line, col: l.pos.col},
+		Message:  e,
+		Severity: Error,
+	})
 	l.evalFailed = true
 }
 
 // Errors returns the errors
-func (l *Lexer) Errors() []string {
+func (l *Lexer) Errors() []Diagnostic {
 	return l.errors
 }
 

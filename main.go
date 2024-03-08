@@ -32,7 +32,7 @@ func main() {
 	}
 
 	for _, lexErr := range lexer.Errors() {
-		fmt.Println(lexErr)
+		fmt.Println(lexErr.String())
 	}
 }
 
